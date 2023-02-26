@@ -1,0 +1,32 @@
+{
+  "name": "lgbtq-soiclal-media-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "NODE_ENV=development nodemon index.js",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ankur6702/LGBTQ-Soiclal-Media-Backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ankur6702/LGBTQ-Soiclal-Media-Backend/issues"
+  },
+  "homepage": "https://github.com/Ankur6702/LGBTQ-Soiclal-Media-Backend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-validator": "^6.15.0",
+    "mongoose": "^6.10.0",
+    "nodemon": "^2.0.20",
+    "swagger-ui-express": "^4.6.1",
+    "winston": "^3.8.2",
+    "yamljs": "^0.3.0"
+  }
+}
