@@ -8,13 +8,13 @@ Clone the repository
 
 
 ```bash
-  git clone https://github.com/Ankur6702/School-Management.git
+  git clone https://github.com/Ankur6702/LGBTQ-Soiclal-Media-Backend.git
 ```
 
 Enter in cloned the directory
 
 ```bash
-  cd School-Management
+  cd LGBTQ-Soiclal-Media-Backend
 ```
 
 Install Node modules in the cloned folder
