@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "engines": {
-    "node": "18.x"
+    "node": "14.x"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "NODE_ENV=development nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "build": "NODE_ENV=production node index.js"
   },
   "repository": {
     "type": "git",
