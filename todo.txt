@@ -1,0 +1,5 @@
+Bookmark Post
+Share Post
+split into routes and controllers
+proper documentation of functions
+make different file for helper functions
