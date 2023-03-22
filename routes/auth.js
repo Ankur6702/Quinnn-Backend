@@ -54,13 +54,12 @@ router.post('/signup',
 
             logger.info('Signup successful');
             logger.debug('User details: ' + user);
-            res.status(200).json({ status: 'success', message: 'User created' });
+            res.status(200).json({ status: 'success', message: 'User created, please verify your email' });
         } catch (error) {
             logger.error('Signup failed: ' + error.message);
             res.status(500).json({ status: 'error', message: error.message });
         }
     });
-
 
 // ============================================================================================================
 

@@ -14,7 +14,7 @@ const PostSchema = new Schema({
         ref: 'user',
         required: true
     },
-    image: {
+    imageURL: {
         type: String,
         required: false,
     },

@@ -6,7 +6,302 @@ info:
   contact:
     email: ankuragarwa246@gmail.com
 servers:
-  - url: /
-    description: Production Server
+  - url: https://lgbtq-backend-free.azurewebsites.net/api
+    description: Production Server (Azure)
   - url: http://localhost:9999/api
     description: Development server
+paths:
+  /auth/signup:
+    post:
+      tags:
+        - Authentication
+      summary: Signup
+      requestBody:
+        $ref: '#/components/requestBodies/Signup'
+      responses:
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal Server Error
+        '200':
+          description: Admin Created Successfully
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User Login
+      requestBody:
+        $ref: '#/components/requestBodies/Login'
+      responses:
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal Server Error
+        '200':
+          description: User Logged In Successfully
+  /auth/forgot-password:
+    post:
+      tags:
+        - Authentication
+      summary: Forgot Password
+      requestBody:
+        $ref: '#/components/requestBodies/ForgotPassword'
+      responses:
+        '200':
+          description: Password Reset Link Sent Successfully
+        '400':
+          description: Invalid input
+        '404':
+          description: Admin Not Found
+        '500':
+          description: Internal Server Error
+  /auth/reset-password/{token}:
+    post:
+      tags:
+        - Authentication
+      summary: Password Reset
+      requestBody:
+        $ref: '#/components/requestBodies/ResetPassword'
+      responses:
+        '200':
+          description: Password Reset Successfully
+        '400':
+          description: Invalid input
+        '404':
+          description: Admin Not Found
+        '500':
+          description: Internal Server Error
+  /auth/reset-password/{token}:
+    get:
+      tags:
+        - Authentication
+      summary: Verify the link clicked by the user via email (From frontend)
+      parameters:
+        - in: path
+          name: token
+          description: Reset Password Token
+      responses:
+        '200':
+          description: Verified, now you can enter new password
+        '404':
+          description: Admin Not Found
+        '500':
+          description: Internal Server Error
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        username:
+          type: string
+        isEmailVerified:
+          type: boolean
+          default: false
+        gender:
+          type: string
+        country:
+          type: string
+        dob:
+          type: string
+          format: date-time
+        bio:
+          type: string
+        profileImageURL:
+          type: string
+        coverImageURL:
+          type: string
+        followers:
+          type: array
+          items:
+            type: object
+            properties:
+              followerId:
+                type: string
+        following:
+          type: array
+          items:
+            type: object
+            properties:
+              followingId:
+                type: string
+        posts:
+          type: array
+          items:
+            type: object
+            properties:
+              postId:
+                type: string
+        isPrivate:
+          type: boolean
+          default: false
+        creationDate:
+          type: string
+          format: date-time
+    Post:
+      type: object
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+        userID:
+          type: string
+        imageURL:
+          type: string
+        likes:
+          type: array
+          items:
+            type: object
+            properties:
+              likeId:
+                type: string
+        comments:
+          type: array
+          items:
+            type: object
+            properties:
+              commentId:
+                type: string
+        creationDate:
+          type: string
+          format: date-time
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        creator:
+          type: string
+        isOnline:
+          type: boolean
+          default: false
+        location:
+          type: string
+        dateTime:
+          type: string
+          format: date-time
+        imageURL:
+          type: string
+        attendees:
+          type: array
+          items:
+            type: object
+            properties:
+              attendeeId:
+                type: string
+        creationDate:
+          type: string
+          format: date-time
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+        comment:
+          type: string
+        userID:
+          type: string
+        postID:
+          type: string
+        likes:
+          type: array
+          items:
+            type: object
+            properties:
+              likeId:
+                type: string
+        dislikes:
+          type: array
+          items:
+            type: object
+            properties:
+              dislikeId:
+                type: string
+        creationDate:
+          type: string
+          format: date-time
+        
+    SignupInput:
+      type: object
+      properties:
+        name:
+          type: string
+          required: true
+        username:
+          type: string
+          uniqueItems: true
+          required: true
+        email:
+          type: string
+          uniqueItems: true
+          required: true
+        password:
+          type: string
+          required: true
+        gender:
+          type: string
+          required: true
+    LoginInput:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    ForgotPasswordInput:
+      type: object
+      properties:
+        email:
+          type: string
+    ResetPasswordInput:
+      type: object
+      properties:
+        newPassword:
+          type: string
+        confirmPassword:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      name: Authorization
+      type: http
+      scheme: bearer
+      in: header
+      bearerFormat: JWT
+  requestBodies:
+    Signup:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SignupInput'
+        description: Signup
+    Login:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LoginInput'
+        description: Login
+    ForgotPassword:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForgotPasswordInput'
+        description: Forgot Password
+    ResetPassword:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResetPasswordInput'
+        description: Reset Password

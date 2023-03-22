@@ -10,7 +10,7 @@ let url;
 if (process.env.NODE_ENV === 'development') {
     url = 'http://localhost:9999/api';
 } else {
-    url = '';
+    url = process.env.PROD_URL;
 }
 
 function sendResetPasswordMail(email, name, token) {

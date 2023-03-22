@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/5f8af377-c48e-4e78-b329-409490c3b23b/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/lgbtq-backend",
+    "appService.deploySubpath": "."
+}

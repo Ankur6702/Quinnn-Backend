@@ -9,9 +9,13 @@ const CommentSchema = new Schema({
         minlength: 3,
         maxlength: 100
     },
-    user: {
+    userID: {
         type: Schema.Types.ObjectId,
         ref: 'user'
+    },
+    postID: {
+        type: Schema.Types.ObjectId,
+        ref: 'post'
     },
     likes: {
         type: Array,
