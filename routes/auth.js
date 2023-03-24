@@ -12,6 +12,7 @@ const User = require('../models/User');
 // Local functions
 const { sendResetPasswordMail, sendVerificationMail } = require('../utils/mailer');
 const logger = require('../logger');
+const { validatePassword, validateUsername } = require('../utils/validators');
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -35,6 +36,10 @@ router.post('/signup',
 
         if (!validatePassword(req.body.password)) {
             return res.status(400).json({ status: 'error', message: "Password should be of 8 characters long and should be less than 16 characters. It should contain at least one uppercase, one lowercase, and one number" });
+        }
+
+        if(!validateUsername(req.body.username)) {
+            return res.status(400).json({ status: 'error', message: "Username should be more then 3 characters. It can contain alphanumeric data" });
         }
 
         try {
@@ -242,20 +247,5 @@ router.post('/reset-password/:token', [
         res.status(500).json({ status: 'error', message: error.message });
     }
 });
-
-// ===================================================Functions==================================================
-
-function validatePassword(data) {
-    logger.info('Inside Password Validation', data);
-    var password = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,15}$/;
-    if (password.test(data)) {
-        logger.info('Password validation successful');
-        return true;
-    }
-    else {
-        logger.error('Password validation failed');
-        return false;
-    }
-}
 
 module.exports = router

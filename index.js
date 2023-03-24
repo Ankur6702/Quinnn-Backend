@@ -27,9 +27,9 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // @ts-ignore
 app.use('/api/auth', require('./routes/auth'));
 // @ts-ignore
-// app.use('/api/profile', require('./routes/profile'));
+app.use('/api/profile', require('./routes/profile'));
 // @ts-ignore
-// app.use('/api/event', require('./routes/event'));
+app.use('/api/event', require('./routes/event'));
 
 // @ts-ignore
 app.get('/', (req, res) => {
