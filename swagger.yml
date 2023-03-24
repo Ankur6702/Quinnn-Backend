@@ -87,10 +87,64 @@ paths:
           description: Admin Not Found
         '500':
           description: Internal Server Error
-  /profile:
+  /search/:username:
     get:
       tags:
-        - Profile
+        - Common
+      summary: Search Profile for a particular username
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: username
+          description: Username of the user
+      responses:
+        '200':
+          description: Profile Fetched Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /followers/:username:
+    get:
+      tags:
+        - Common
+      summary: Get all followers of a user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: username
+          description: Username of the user
+      responses:
+        '200':
+          description: Followers Fetched Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /following/:username:
+    get:
+      tags:
+        - Common
+      summary: Get all following of a user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: username
+          description: Username of the user
+      responses:
+        '200':
+          description: Following Fetched Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/profile:
+    get:
+      tags:
+        - User
       summary: Get Profile for the logged in user
       security:
         - bearerAuth: []
@@ -101,10 +155,10 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
-  /profile/update:  
+  /user/profile/update:  
     put:
       tags:
-        - Profile
+        - User
       summary: Update Profile
       security:
         - bearerAuth: []
@@ -120,25 +174,283 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
-  /profile/search/:username:
-    get:
+  /user/create-post:
+    post:
       tags:
-        - Profile
-      summary: Search Profile for a particular username
+        - User
+      summary: Create a post
       security:
         - bearerAuth: []
-      parameters:
-        - in: path
-          name: username
-          description: Username of the user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePost'
       responses:
         '200':
-          description: Profile Fetched Successfully
+          description: Post Created Successfully
         '401':
           description: Unauthorized
         '500':
           description: Internal Server Error
-
+  /user/post/:postId:
+    get:
+      tags:
+        - User
+      summary: Get a particular post
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: postId
+          description: Post ID
+      responses:
+        '200':
+          description: Post Fetched Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/posts:
+    get:
+      tags:
+        - User
+      summary: Get all posts of the logged in user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Posts Fetched Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/update-post/:postId:
+    put:
+      tags:
+        - User
+      summary: Update a particular post
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: postId
+          description: Post ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePost'
+      responses:
+        '200':
+          description: Post Updated Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/delete-post/:postId:
+    delete:
+      tags:
+        - User
+      summary: Delete a particular post
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: postId
+          description: Post ID
+      responses:
+        '200':
+          description: Post Deleted Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/follow/:userId:
+    put:
+      tags:
+        - User
+      summary: Follow a user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          description: User ID
+      responses:
+        '200':
+          description: User Followed Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/unfollow/:userId:
+    put:
+      tags:
+        - User
+      summary: Unfollow a user
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: userId
+          description: User ID
+      responses:
+        '200':
+          description: User Unfollowed Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/like-post/:postId:
+    put:
+      tags:
+        - User
+      summary: Like a post
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: postId
+          description: Post ID
+      responses:
+        '200':
+          description: Post Liked Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/unlike-post/:postId:
+    put:
+      tags:
+        - User
+      summary: Unlike a post
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: postId
+          description: Post ID
+      responses:
+        '200':
+          description: Post Unliked Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/comment/:postId:
+    post:
+      tags:
+        - User
+      summary: Comment on a post
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: postId
+          description: Post ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateComment'
+      responses:
+        '200':
+          description: Comment Created Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/delete-comment/:commentId:
+    delete:
+      tags:
+        - User
+      summary: Delete a comment
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: commentId
+          description: Comment ID
+      responses:
+        '200':
+          description: Comment Deleted Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/like-comment/:commentId:
+    put:
+      tags:
+        - User
+      summary: Like a comment
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: commentId
+          description: Comment ID
+      responses:
+        '200':
+          description: Comment Liked Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/unlike-comment/:commentId:
+    put:
+      tags:
+        - User
+      summary: Unlike a comment
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: commentId
+          description: Comment ID
+      responses:
+        '200':
+          description: Comment Unliked Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/dislike-comment/:commentId:
+    put:
+      tags:
+        - User
+      summary: Dislike a comment
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: commentId
+          description: Comment ID
+      responses:
+        '200':
+          description: Comment Disliked Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/undislike-comment/:commentId:
+    put:
+      tags:
+        - User
+      summary: Undislike a comment
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: commentId
+          description: Comment ID
+      responses:
+        '200':
+          description: Comment Undisliked Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
 components:
   schemas:
     User:
@@ -339,6 +651,23 @@ components:
           type: string
         isPrivate:
           type: boolean
+    CreatePostInput:
+      type: object
+      properties:
+        text:
+          type: string
+        imageURL:
+          type: string
+    UpdatePostInput:
+      type: object
+      properties:
+        text:
+          type: string
+    CreateCommentInput:
+      type: object
+      properties:
+        comment:
+          type: string
   securitySchemes:
     bearerAuth:
       name: Authorization
@@ -377,3 +706,21 @@ components:
           schema:
             $ref: '#/components/schemas/UpdateProfileInput'
         description: Update Profile
+    Post:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreatePostInput'
+        description: Create Post
+    UpdatePost:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdatePostInput'
+        description: Update Post
+    CreateComment:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateCommentInput'
+        description: Create Comment
