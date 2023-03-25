@@ -105,42 +105,6 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
-  /followers/:username:
-    get:
-      tags:
-        - Common
-      summary: Get all followers of a user
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: username
-          description: Username of the user
-      responses:
-        '200':
-          description: Followers Fetched Successfully
-        '401':
-          description: Unauthorized
-        '500':
-          description: Internal Server Error
-  /following/:username:
-    get:
-      tags:
-        - Common
-      summary: Get all following of a user
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: username
-          description: Username of the user
-      responses:
-        '200':
-          description: Following Fetched Successfully
-        '401':
-          description: Unauthorized
-        '500':
-          description: Internal Server Error
   /user/profile:
     get:
       tags:
