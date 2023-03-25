@@ -68,9 +68,9 @@ router.put('/profile/update', fetchUser, async (req, res) => {
         const newUser = {};
         if (name) newUser.name = name;
         if (username) newUser.username = username;
-        if (bio) newUser.bio = bio;
-        if (profileImageURL) newUser.profileImageURL = profileImageURL;
-        if (coverImageURL) newUser.coverImageURL = coverImageURL;
+        if (bio || bio === '') newUser.bio = bio;
+        if (profileImageURL || profileImageURL === '') newUser.profileImageURL = profileImageURL;
+        if (coverImageURL || coverImageURL === '') newUser.coverImageURL = coverImageURL;
         if (isPrivate) newUser.isPrivate = isPrivate;
         if (country) newUser.country = country;
         if (dob) newUser.dob = dob;
@@ -92,16 +92,8 @@ router.put('/profile/update', fetchUser, async (req, res) => {
 
 // Create a post
 // @ts-ignore
-router.post('/create-post', fetchUser, [
-    body('text', 'Text is required').not().isEmpty(),
-    body('imageURL', 'Invalid image URL').optional(),
-], async (req, res) => {
+router.post('/create-post', fetchUser, async (req, res) => {
     logger.info('Creating a post');
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        logger.error('Invalid input');
-        return res.status(400).json({ status: 'error', message: errors.array() });
-    }
 
     try {
         // @ts-ignore
