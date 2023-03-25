@@ -39,7 +39,7 @@ router.get('/profile', fetchUser, async (req, res) => {
     }
 });
 
-// Router to update user profile (name, username, bio, profileImageURL, coverImageURL, isPrivate)
+// Router to update user profile (name, username, bio, profileImageURL, coverImageURL, isPrivate, dob, country)
 // @ts-ignore
 router.put('/profile/update', fetchUser, async (req, res) => {
     logger.info('Updating user profile');
@@ -47,7 +47,7 @@ router.put('/profile/update', fetchUser, async (req, res) => {
     try {
         // @ts-ignore
         const userId = req.userId;
-        const { name, username, bio, profileImageURL, coverImageURL, isPrivate } = req.body;
+        const { name, username, bio, profileImageURL, coverImageURL, isPrivate, country, dob } = req.body;
 
         // Check if the username already exists and is not the current user's username and is valid
         if (username) {
@@ -64,16 +64,6 @@ router.put('/profile/update', fetchUser, async (req, res) => {
             }
         }
 
-        // Check if the profileImageURL & coverImageURL are valid
-        if (profileImageURL && !validateURL(profileImageURL)) {
-            logger.error('Invalid profile image URL');
-            return res.status(400).json({ status: 'error', message: 'Invalid profile image URL' });
-        }
-        if (coverImageURL && !validateURL(coverImageURL)) {
-            logger.error('Invalid cover image URL');
-            return res.status(400).json({ status: 'error', message: 'Invalid cover image URL' });
-        }
-
         // Create a new user object
         const newUser = {};
         if (name) newUser.name = name;
@@ -82,6 +72,8 @@ router.put('/profile/update', fetchUser, async (req, res) => {
         if (profileImageURL) newUser.profileImageURL = profileImageURL;
         if (coverImageURL) newUser.coverImageURL = coverImageURL;
         if (isPrivate) newUser.isPrivate = isPrivate;
+        if (country) newUser.country = country;
+        if (dob) newUser.dob = dob;
 
         // Find the user to be updated and update it
         const user = await User.findByIdAndUpdate(userId, { $set: newUser }, { new: true });
@@ -102,7 +94,7 @@ router.put('/profile/update', fetchUser, async (req, res) => {
 // @ts-ignore
 router.post('/create-post', fetchUser, [
     body('text', 'Text is required').not().isEmpty(),
-    body('imageURL', 'Invalid image URL').optional().isURL(),
+    body('imageURL', 'Invalid image URL').optional(),
 ], async (req, res) => {
     logger.info('Creating a post');
     const errors = validationResult(req);
@@ -119,12 +111,6 @@ router.post('/create-post', fetchUser, [
         if (!user) {
             logger.error('User not found');
             return res.status(404).json({ status: 'error', message: 'User not found' });
-        }
-
-        // Check if the imageURL is valid
-        if (imageURL && !validateURL(imageURL)) {
-            logger.error('Invalid image URL');
-            return res.status(400).json({ status: 'error', message: 'Invalid image URL' });
         }
 
         const newPost = new Post({ text, imageURL, userID: userId });

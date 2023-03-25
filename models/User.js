@@ -39,7 +39,8 @@ const UserSchema = new Schema({
     },
     dob: {
         type: Date,
-        required: false
+        required: false,
+        default: ''
     },
     bio: {
         type: String,

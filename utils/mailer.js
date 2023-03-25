@@ -35,7 +35,7 @@ function sendResetPasswordMail(email, name, token) {
         If you did request a password reset, please click on the following link to 
         reset your password:<br>
         <a href="${verificationURL}">Reset Password</a><br><br>
-        This link will expire in 20 minutes, so please reset your password as soon as 
+        This link will expire soon, so please reset your password as soon as 
         possible to ensure the security of your account.<br><br>
         If you have any questions or concerns, please don't hesitate to reach out to 
         our support team.<br><br>
@@ -76,7 +76,7 @@ async function sendVerificationMail(email, name, token) {
         To verify your email and gain full access to the platform, please click on 
         the following link:<br>
         <a href="${verificationURL}">Verify Email</a><br><br>
-        This link will expire in 1 day, so please verify your mail as soon as possible 
+        This link will expire soon, so please verify your mail as soon as possible 
         to ensure smooth verification. If you did not create an account on [Website Name], 
         please ignore this email. 
         But if you did sign up and are having trouble verifying your email, please 

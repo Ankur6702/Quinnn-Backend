@@ -51,12 +51,11 @@ router.post('/signup',
                 username: req.body.username,
                 email: req.body.email,
                 password: hashedPassword,
-                gender: req.body.gender,
-                dob: "",
+                gender: req.body.gender
             });
 
             // @ts-ignore
-            await sendVerificationMail(req.body.email, req.body.name, jwt.sign({ email: req.body.email }, JWT_SECRET, { expiresIn: '1d' }));
+            await sendVerificationMail(req.body.email, req.body.name, jwt.sign({ email: req.body.email }, JWT_SECRET, { expiresIn: '30d' }));
 
             logger.info('Signup successful');
             logger.debug('User details: ' + user);
@@ -128,7 +127,7 @@ router.post('/login', [
         }
         // create and assign a token
         // @ts-ignore
-        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '30d' });
         logger.info('Login successful');
         res.status(200).json({ status: 'success', message: 'Login successful', token });
     } catch (error) {
@@ -159,7 +158,7 @@ router.post('/forgot-password', [
         }
 
         // @ts-ignore
-        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '20m' });
+        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '30d' });
         logger.debug('Token: ' + token);
 
         sendResetPasswordMail(user.email, user.name, token);

@@ -127,10 +127,7 @@ paths:
       security:
         - bearerAuth: []
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserProfile'
+        $ref: '#/components/requestBodies/UserProfile'
       responses:
         '200':
           description: Profile Updated Successfully
@@ -146,10 +143,7 @@ paths:
       security:
         - bearerAuth: []
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreatePost'
+        $ref: '#/components/requestBodies/CreatePost'
       responses:
         '200':
           description: Post Created Successfully
@@ -201,10 +195,7 @@ paths:
           name: postId
           description: Post ID
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdatePost'
+        $ref: '#/components/requestBodies/UpdatePost'
       responses:
         '200':
           description: Post Updated Successfully
@@ -314,10 +305,7 @@ paths:
           name: postId
           description: Post ID
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateComment'
+        $ref: '#/components/requestBodies/CreateComment'
       responses:
         '200':
           description: Comment Created Successfully
@@ -613,6 +601,11 @@ components:
           type: string
         coverImageURL:
           type: string
+        dob:
+          type: string
+          format: date
+        country:
+          type: string
         isPrivate:
           type: boolean
     CreatePostInput:
@@ -670,7 +663,7 @@ components:
           schema:
             $ref: '#/components/schemas/UpdateProfileInput'
         description: Update Profile
-    Post:
+    CreatePost:
       content:
         application/json:
           schema:
