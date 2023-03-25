@@ -51,7 +51,8 @@ router.post('/signup',
                 username: req.body.username,
                 email: req.body.email,
                 password: hashedPassword,
-                gender: req.body.gender
+                gender: req.body.gender,
+                dob: "",
             });
 
             // @ts-ignore

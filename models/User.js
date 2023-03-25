@@ -34,6 +34,7 @@ const UserSchema = new Schema({
     },
     country: {
         type: String,
+        default: '',
         required: false
     },
     dob: {
@@ -48,10 +49,12 @@ const UserSchema = new Schema({
     },
     profileImageURL: {
         type: String,
+        default: "",
         required: false
     },
     coverImageURL: {
         type: String,
+        default: "",
         required: false
     },
     followers: {
