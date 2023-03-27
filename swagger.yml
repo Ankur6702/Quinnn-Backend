@@ -135,6 +135,24 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
+  /user/search/:username:
+    get:
+      tags:
+        - User
+      summary: Search Profile for a particular username
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: username
+          description: Username of the user
+      responses:
+        '200':
+          description: Profile Fetched Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
   /user/create-post:
     post:
       tags:
@@ -309,6 +327,24 @@ paths:
       responses:
         '200':
           description: Comment Created Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /user/comments/:postId:
+    get:
+      tags:
+        - User
+      summary: Get all comments of a post
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: postId
+          description: Post ID
+      responses:
+        '200':
+          description: Comments Fetched Successfully
         '401':
           description: Unauthorized
         '500':

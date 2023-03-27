@@ -89,6 +89,30 @@ router.put('/profile/update', fetchUser, async (req, res) => {
     }
 });
 
+// Router to search for a user based on username
+router.get('/search/:username', fetchUser, async (req, res) => {
+    logger.info('Searching for a user');
+    try {
+        const usernameToSearch = req.params.username;
+        // @ts-ignore
+        const userId = req.userId;
+        // Find the user
+        const user = await User.findById(userId);
+        const userToSearch = await User.find({ username: usernameToSearch });
+        if (!userToSearch) {
+            logger.error('User not found');
+            return res.status(404).json({ status: 'error', message: 'User not found' });
+        }
+
+        // @ts-ignore
+        const isFollowing = user.following.includes(userToSearch._id);
+        logger.info('User found');
+        res.status(200).json({ status: 'success', message: 'User found', data: userToSearch, isFollowing });
+    } catch (error) {
+        logger.error('Internal Server Error: ', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
 
 // Create a post
 // @ts-ignore
@@ -110,7 +134,11 @@ router.post('/create-post', fetchUser, async (req, res) => {
 
         // Update posts array of the user
         // @ts-ignore
-        user.posts.push(post._id);
+        user.posts.push({
+            postID: post._id,
+            text: post.text,
+            imageURL: post.imageURL
+        });
         //  @ts-ignore
         await user.save();
 
@@ -305,13 +333,29 @@ router.put('/follow/:id', fetchUser, async (req, res) => {
 
         // Add the user to be followed to the following list of the user
         // @ts-ignore
-        user.following.push(followId);
+        user.following.push({
+            userID: followId,
+            name: userToFollow.name,
+            username: userToFollow.username,
+            profileImageURL: userToFollow.profileImageURL,
+            gender: userToFollow.gender,
+            // @ts-ignore
+            numberOfFollowers: userToFollow.followers.length
+        });
         // @ts-ignore
         await user.save();
 
         // Add the user to the followers list of the user to be followed
         // @ts-ignore
-        userToFollow.followers.push(userId);
+        userToFollow.followers.push({
+            userID: userId,
+            name: user.name,
+            username: user.username,
+            profileImageURL: user.profileImageURL,
+            gender: user.gender,
+            // @ts-ignore
+            numberOfFollowers: user.followers.length
+        });
         // @ts-ignore
         await userToFollow.save();
 
@@ -490,6 +534,38 @@ router.post('/comment/:postid', fetchUser, [
 
         logger.info('Commented on the post successfully');
         res.status(200).json({ status: 'success', message: 'Commented on the post successfully' });
+    } catch (error) {
+        logger.error('Internal Server Error: ', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+// Fetch all comments of a post
+// @ts-ignore
+router.get('/comments/:postid', fetchUser, async (req, res) => {
+    logger.info('Fetching all comments of a post');
+    try {
+        // @ts-ignore
+        const userId = req.userId;
+        const postId = req.params.postid;
+
+        // Find the post
+        const post = await Post.findById(postId);
+        if (!post) {
+            logger.error('Post not found');
+            return res.status(404).json({ status: 'error', message: 'Post not found' });
+        }
+
+        // Find all the comments of the post
+        // @ts-ignore
+        const comments = await Comment.find({ postID: postId });
+        if (!comments) {
+            logger.error('No comments found');
+            return res.status(404).json({ status: 'error', message: 'No comments found' });
+        }
+
+        logger.info('Comments fetched successfully');
+        res.status(200).json({ status: 'success', message: 'Comments fetched successfully', comments });
     } catch (error) {
         logger.error('Internal Server Error: ', error.message);
         res.status(500).json({ status: 'error', message: error.message });

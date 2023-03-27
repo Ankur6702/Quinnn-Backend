@@ -5,6 +5,8 @@ make different file for helper functions
 resend verification mail
 delete user profile
 
-
-
 private operations (Followers, posts etc) - new middleware
+
+infinte post
+private profile follow request
+event api
