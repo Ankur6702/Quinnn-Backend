@@ -29,7 +29,7 @@ function sendResetPasswordMail(email, name, token) {
         to: email,
         subject: 'Reset Your Password',
         html: `Hi ${name},<br><br>
-        We received a request to reset your password for your account on [Website Name]. 
+        We received a request to reset your password for your account on Quinnn. 
         If you did not make this request, please ignore this email and no changes will 
         be made to your account.<br><br>
         If you did request a password reset, please click on the following link to 
@@ -40,7 +40,7 @@ function sendResetPasswordMail(email, name, token) {
         If you have any questions or concerns, please don't hesitate to reach out to 
         our support team.<br><br>
         Best,<br>
-        The [Website Name] Team`
+        The Quinnn Team`
     };
 
 
@@ -70,7 +70,7 @@ async function sendVerificationMail(email, name, token) {
         to: email,
         subject: 'Verify Your Email Address',
         html: `Hi ${name},<br><br>
-        Welcome to [Website Name], a social media platform dedicated to supporting the 
+        Welcome to Quinnn, a social media platform dedicated to supporting the 
         LGBTQ+ community! Before you can start connecting with others and sharing your 
         story, we need to verify your email address.<br><br>
         To verify your email and gain full access to the platform, please click on 
@@ -82,9 +82,9 @@ async function sendVerificationMail(email, name, token) {
         But if you did sign up and are having trouble verifying your email, please 
         don't hesitate to reach out to our support team.<br><br>
         We're excited to have you as part of our community and look forward to seeing 
-        you on [Website Name].<br><br>
+        you on Quinnn.<br><br>
         Best,<br>
-        The [Website Name] Team`
+        The Quinnn Team`
     };
 
 

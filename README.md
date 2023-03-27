@@ -1,4 +1,4 @@
-# LGBTQ-Soiclal-Media-Backend
+# Quinnn Backend
 
 ## Installation
 

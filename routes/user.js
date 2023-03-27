@@ -137,7 +137,9 @@ router.post('/create-post', fetchUser, async (req, res) => {
         user.posts.push({
             postID: post._id,
             text: post.text,
-            imageURL: post.imageURL
+            imageURL: post.imageURL,
+            creationDate: post.creationDate,
+            numberOfLikes: post.likes.length
         });
         //  @ts-ignore
         await user.save();

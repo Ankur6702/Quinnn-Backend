@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: LGBTQ Social Media API List
-  description: This is a reference api list of a LGBTQ Social Media Backend.
+  title: Quinnn API List
+  description: This is a reference api list of Quinnn Backend.
   version: 1.0.0
   contact:
     email: ankuragarwa246@gmail.com
