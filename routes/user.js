@@ -71,7 +71,7 @@ router.put('/profile/update', fetchUser, async (req, res) => {
         if (bio || bio === '') newUser.bio = bio;
         if (profileImageURL || profileImageURL === '') newUser.profileImageURL = profileImageURL;
         if (coverImageURL || coverImageURL === '') newUser.coverImageURL = coverImageURL;
-        if (isPrivate) newUser.isPrivate = isPrivate;
+        if (isPrivate != null) newUser.isPrivate = isPrivate;
         if (country) newUser.country = country;
         if (dob) newUser.dob = dob;
 
