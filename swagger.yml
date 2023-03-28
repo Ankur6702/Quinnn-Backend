@@ -87,20 +87,43 @@ paths:
           description: Admin Not Found
         '500':
           description: Internal Server Error
-  /search/:username:
+  /posts:
     get:
       tags:
         - Common
-      summary: Search Profile for a particular username
-      security:
-        - bearerAuth: []
+      summary: Get all posts
       parameters:
-        - in: path
-          name: username
-          description: Username of the user
+        - in: query
+          name: page
+          description: Page Number
+        - in: query
+          name: limit
+          description: Limit of posts per page
+        - in: query
+          name: sort
+          description: Sort by (popular or recent)
       responses:
         '200':
-          description: Profile Fetched Successfully
+          description: Posts Fetched Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /users:
+    get:
+      tags:
+        - Common
+      summary: Get all users
+      parameters:
+        - in: query
+          name: page
+          description: Page Number
+        - in: query
+          name: limit
+          description: Limit of users per page
+      responses:
+        '200':
+          description: Users Fetched Successfully
         '401':
           description: Unauthorized
         '500':
@@ -153,92 +176,6 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
-  /user/create-post:
-    post:
-      tags:
-        - User
-      summary: Create a post
-      security:
-        - bearerAuth: []
-      requestBody:
-        $ref: '#/components/requestBodies/CreatePost'
-      responses:
-        '200':
-          description: Post Created Successfully
-        '401':
-          description: Unauthorized
-        '500':
-          description: Internal Server Error
-  /user/post/:postId:
-    get:
-      tags:
-        - User
-      summary: Get a particular post
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: postId
-          description: Post ID
-      responses:
-        '200':
-          description: Post Fetched Successfully
-        '401':
-          description: Unauthorized
-        '500':
-          description: Internal Server Error
-  /user/posts:
-    get:
-      tags:
-        - User
-      summary: Get all posts of the logged in user
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Posts Fetched Successfully
-        '401':
-          description: Unauthorized
-        '500':
-          description: Internal Server Error
-  /user/update-post/:postId:
-    put:
-      tags:
-        - User
-      summary: Update a particular post
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: postId
-          description: Post ID
-      requestBody:
-        $ref: '#/components/requestBodies/UpdatePost'
-      responses:
-        '200':
-          description: Post Updated Successfully
-        '401':
-          description: Unauthorized
-        '500':
-          description: Internal Server Error
-  /user/delete-post/:postId:
-    delete:
-      tags:
-        - User
-      summary: Delete a particular post
-      security:
-        - bearerAuth: []
-      parameters:
-        - in: path
-          name: postId
-          description: Post ID
-      responses:
-        '200':
-          description: Post Deleted Successfully
-        '401':
-          description: Unauthorized
-        '500':
-          description: Internal Server Error
   /user/follow/:userId:
     put:
       tags:
@@ -250,6 +187,9 @@ paths:
         - in: path
           name: userId
           description: User ID
+          schema:
+            type: string
+            format: ObjectId
       responses:
         '200':
           description: User Followed Successfully
@@ -268,6 +208,9 @@ paths:
         - in: path
           name: userId
           description: User ID
+          schema:
+            type: string
+            format: ObjectId
       responses:
         '200':
           description: User Unfollowed Successfully
@@ -275,10 +218,84 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
-  /user/like-post/:postId:
+  /post/create:
+    post:
+      tags:
+        - Post
+      summary: Create a post
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/CreatePost'
+      responses:
+        '200':
+          description: Post Created Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /post/all:
+    get:
+      tags:
+        - Post
+      summary: Get all posts of the logged in user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Posts Fetched Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /post/update/:postId:
     put:
       tags:
-        - User
+        - Post
+      summary: Update a particular post
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: postId
+          description: Post ID
+          schema:
+            type: string
+            format: ObjectId
+      requestBody:
+        $ref: '#/components/requestBodies/UpdatePost'
+      responses:
+        '200':
+          description: Post Updated Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /post/delete/:postId:
+    delete:
+      tags:
+        - Post
+      summary: Delete a particular post
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: postId
+          description: Post ID
+          schema:
+            type: string
+            format: ObjectId
+      responses:
+        '200':
+          description: Post Deleted Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /post/like/:postId:
+    put:
+      tags:
+        - Post
       summary: Like a post
       security:
         - bearerAuth: []
@@ -286,6 +303,9 @@ paths:
         - in: path
           name: postId
           description: Post ID
+          schema:
+            type: string
+            format: ObjectId
       responses:
         '200':
           description: Post Liked Successfully
@@ -293,10 +313,10 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
-  /user/unlike-post/:postId:
+  /post/unlike/:postId:
     put:
       tags:
-        - User
+        - Post
       summary: Unlike a post
       security:
         - bearerAuth: []
@@ -304,6 +324,9 @@ paths:
         - in: path
           name: postId
           description: Post ID
+          schema:
+            type: string
+            format: ObjectId
       responses:
         '200':
           description: Post Unliked Successfully
@@ -311,10 +334,10 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
-  /user/comment/:postId:
+  /comment/create/:postId:
     post:
       tags:
-        - User
+        - Comment
       summary: Comment on a post
       security:
         - bearerAuth: []
@@ -322,6 +345,9 @@ paths:
         - in: path
           name: postId
           description: Post ID
+          schema:
+            type: string
+            format: ObjectId
       requestBody:
         $ref: '#/components/requestBodies/CreateComment'
       responses:
@@ -331,10 +357,10 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
-  /user/comments/:postId:
+  /comment/fetch/:postId:
     get:
       tags:
-        - User
+        - Comment
       summary: Get all comments of a post
       security:
         - bearerAuth: []
@@ -342,6 +368,9 @@ paths:
         - in: path
           name: postId
           description: Post ID
+          schema:
+            type: string
+            format: ObjectId
       responses:
         '200':
           description: Comments Fetched Successfully
@@ -349,10 +378,10 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
-  /user/delete-comment/:commentId:
+  /comment/delete/:commentId:
     delete:
       tags:
-        - User
+        - Comment
       summary: Delete a comment
       security:
         - bearerAuth: []
@@ -360,6 +389,9 @@ paths:
         - in: path
           name: commentId
           description: Comment ID
+          schema:
+            type: string
+            format: ObjectId
       responses:
         '200':
           description: Comment Deleted Successfully
@@ -367,10 +399,10 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
-  /user/like-comment/:commentId:
+  /comment/like/:commentId:
     put:
       tags:
-        - User
+        - Comment
       summary: Like a comment
       security:
         - bearerAuth: []
@@ -378,6 +410,9 @@ paths:
         - in: path
           name: commentId
           description: Comment ID
+          schema:
+            type: string
+            format: ObjectId
       responses:
         '200':
           description: Comment Liked Successfully
@@ -385,10 +420,10 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
-  /user/unlike-comment/:commentId:
+  /comment/unlike/:commentId:
     put:
       tags:
-        - User
+        - Comment
       summary: Unlike a comment
       security:
         - bearerAuth: []
@@ -396,6 +431,9 @@ paths:
         - in: path
           name: commentId
           description: Comment ID
+          schema:
+            type: string
+            format: ObjectId
       responses:
         '200':
           description: Comment Unliked Successfully
@@ -403,10 +441,10 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
-  /user/dislike-comment/:commentId:
+  /comment/dislike/:commentId:
     put:
       tags:
-        - User
+        - Comment
       summary: Dislike a comment
       security:
         - bearerAuth: []
@@ -414,6 +452,9 @@ paths:
         - in: path
           name: commentId
           description: Comment ID
+          schema:
+            type: string
+            format: ObjectId
       responses:
         '200':
           description: Comment Disliked Successfully
@@ -421,10 +462,10 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
-  /user/undislike-comment/:commentId:
+  /comment/undislike/:commentId:
     put:
       tags:
-        - User
+        - Comment
       summary: Undislike a comment
       security:
         - bearerAuth: []
@@ -432,6 +473,9 @@ paths:
         - in: path
           name: commentId
           description: Comment ID
+          schema:
+            type: string
+            format: ObjectId
       responses:
         '200':
           description: Comment Undisliked Successfully

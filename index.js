@@ -29,13 +29,17 @@ app.use('/api/auth', require('./routes/auth'));
 // @ts-ignore
 app.use('/api/user', require('./routes/user'));
 // @ts-ignore
+app.use('/api/post', require('./routes/post'));
+// @ts-ignore
+app.use('/api/comment', require('./routes/comment'));
+// @ts-ignore
 app.use('/api/event', require('./routes/event'));
 // @ts-ignore
 app.use('/api/', require('./routes/common'));
 
 // @ts-ignore
 app.get('/', (req, res) => {
-    res.send('Server Working');
+    res.send('Welcome to the Quinnn Server. Server is running!');
 });
 
 // @ts-ignore
