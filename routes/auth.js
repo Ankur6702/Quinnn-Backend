@@ -127,7 +127,12 @@ router.post('/login', [
         }
         // create and assign a token
         // @ts-ignore
-        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '30d' });
+        const token = jwt.sign({ 
+            id: user._id,
+            name: user.name,
+            username: user.username
+        // @ts-ignore 
+        }, JWT_SECRET, { expiresIn: '30d' });
         logger.info('Login successful');
         res.status(200).json({ status: 'success', message: 'Login successful', token });
     } catch (error) {

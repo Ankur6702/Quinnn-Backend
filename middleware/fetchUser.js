@@ -37,8 +37,10 @@ const fetchUser = async (req, res, next) => {
             decoded = jwt.verify(token, process.env.JWT_SECRET);
             logger.debug('Decoded JWT token: ', decoded);
         }
-
+        console.log(decoded)
         req.userId = decoded.id;
+        req.name = decoded.name;
+        req.username = decoded.username;
         next();
     } catch (error) {
         logger.error('Token is not valid: ', error);

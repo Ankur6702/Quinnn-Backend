@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 // Models
 const User = require('../models/User');
 const Post = require('../models/Post');
+const Event = require('../models/Event');
 
 // Local functions
 const logger = require('../logger');
@@ -64,6 +65,37 @@ router.get('/users', async (req, res) => {
         const results = users.slice(startIndex, endIndex);
         logger.info('Users found');
         res.status(200).json({ status: 'success', message: 'Users found', data: results });
+    } catch (error) {
+        logger.error('Internal Server Error: ', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+// Fetch all events
+router.get('/events', async (req, res) => {
+    logger.info('Fetching all events');
+    try {
+        const { page = 1, limit = 10 , sort = 'popular'} = req.query;
+        // @ts-ignore
+        const events = await Event.find();
+        if (!events) {
+            logger.error('Events not found');
+            return res.status(404).json({ status: 'error', message: 'Events not found' });
+        }
+
+        if (sort === 'popular') {
+            events.sort((a, b) => b.attendees.length - a.attendees.length);
+        } else {
+            // @ts-ignore
+            events.sort((a, b) => new Date(b.dateTime) - new Date(a.dateTime));
+        }
+        // @ts-ignore
+        const startIndex = (page - 1) * limit;
+        // @ts-ignore
+        const endIndex = page * limit;
+        const results = events.slice(startIndex, endIndex);
+        logger.info('Events found');
+        res.status(200).json({ status: 'success', message: 'Events found', data: results });
     } catch (error) {
         logger.error('Internal Server Error: ', error.message);
         res.status(500).json({ status: 'error', message: error.message });

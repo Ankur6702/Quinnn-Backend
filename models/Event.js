@@ -7,30 +7,33 @@ const EventSchema = new Schema({
         required: true,
         trim: true,
         minlength: 3,
-        maxlength: 50
+        maxlength: 100
     },
     description: {
         type: String,
         required: true,
         trim: true,
-        minlength: 3,
-        maxlength: 200
+        minlength: 5,
+        maxlength: 500
     },
     creator: {
-        type: Schema.Types.ObjectId,
-        ref: 'user',
-        required: true
+        type: Object,
+        required: true,
     },
     isOnline: {
         type: Boolean,
         required: true,
     },
+    meetingURL: {
+        type: String,
+        required: false,
+    },
     location: {
         type: String,
-        required: true,
+        required: false,
         trim: true,
         minlength: 3,
-        maxlength: 100
+        maxlength: 200
     },
     dateTime: {
         type: Date,

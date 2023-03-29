@@ -73,9 +73,9 @@ router.get('/all', fetchUser, async (req, res) => {
 
         // Find all posts of the user
         // @ts-ignore
-        const postIds = user.posts;
+        const postObj = user.posts;
         // @ts-ignore
-        const posts = await Post.find({ _id: { $in: postIds.map(post => post.postID) } }).sort({ creationDate: -1 });
+        const posts = await Post.find({ _id: { $in: postObj.map(post => post.postID) } }).sort({ creationDate: -1 });
         if (!posts) {
             logger.error('Posts not found');
             return res.status(404).json({ status: 'error', message: 'Posts not found' });

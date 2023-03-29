@@ -63,7 +63,7 @@ router.post('/create/:postid', fetchUser, [
 
 // Fetch all comments of a post
 // @ts-ignore
-router.get('/fetch/:postid', fetchUser, async (req, res) => {
+router.get('/fetch/:postid', async (req, res) => {
     logger.info('Fetching all comments of a post');
     try {
         // @ts-ignore
