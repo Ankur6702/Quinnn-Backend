@@ -35,19 +35,19 @@ router.post('/create/:postid', fetchUser, [
         const postId = req.params.postid;
         const { text } = req.body;
 
-        // Find the post to be commented on
-        const post = await Post.findById(postId);
+        logger.info('Fetching post');
+        let post = await Post.findById(postId);
         if (!post) {
             logger.error('Post not found');
             return res.status(404).json({ status: 'error', message: 'Post not found' });
         }
 
-        // Create a new comment
+        logger.info('Creating comment');
         const comment = new Comment({ text: text, userID: userId, postID: postId });
         // @ts-ignore
         await comment.save();
 
-        // Add the comment to the comments list of the post
+        logger.info('Adding comment to the post');
         // @ts-ignore
         post.comments.push(comment._id);
         // @ts-ignore
@@ -70,14 +70,14 @@ router.get('/fetch/:postid', async (req, res) => {
         const userId = req.userId;
         const postId = req.params.postid;
 
-        // Find the post
+        logger.info('Fetching post');
         const post = await Post.findById(postId);
         if (!post) {
             logger.error('Post not found');
             return res.status(404).json({ status: 'error', message: 'Post not found' });
         }
 
-        // Find all the comments of the post
+        logger.info('Fetching comments');
         // @ts-ignore
         const comments = await Comment.find({ postID: postId });
         if (!comments) {
@@ -102,35 +102,35 @@ router.delete('/delete/:id', fetchUser, async (req, res) => {
         const userId = req.userId;
         const commentId = req.params.id;
 
-        // Find the comment to be deleted
+        logger.info('Fetching comment');
         const comment = await Comment.findById(commentId);
         if (!comment) {
             logger.error('Comment not found');
             return res.status(404).json({ status: 'error', message: 'Comment not found' });
         }
 
-        // Check if the user is the owner of the comment
+        logger.info('Checking if the user is authorized to delete the comment');
         // @ts-ignore
         if (comment.userID.toString() !== userId) {
             logger.error('Not authorized to delete the comment');
             return res.status(401).json({ status: 'error', message: 'Not authorized to delete the comment' });
         }
 
-        // Find the post to which the comment belongs
+        logger.info('Fetching post');
         // @ts-ignore
-        const post = await Post.findById(comment.postID);
+        let post = await Post.findById(comment.postID);
         if (!post) {
             logger.error('Post not found');
             return res.status(404).json({ status: 'error', message: 'Post not found' });
         }
 
-        // Remove the comment from the comments list of the post
+        logger.info('Deleting comment from the post');
         // @ts-ignore
         post.comments = post.comments.filter((id) => id !== commentId);
         // @ts-ignore
         await post.save();
 
-        // Delete the comment
+        logger.info('Deleting comment');
         // @ts-ignore
         comment.remove();
 
@@ -151,14 +151,14 @@ router.put('/like/:id', fetchUser, async (req, res) => {
         const userId = req.userId;
         const commentId = req.params.id;
 
-        // Find the comment to be liked
-        const comment = await Comment.findById(commentId);
+        logger.info('Fetching comment');
+        let comment = await Comment.findById(commentId);
         if (!comment) {
             logger.error('Comment not found');
             return res.status(404).json({ status: 'error', message: 'Comment not found' });
         }
 
-        // Check if the user has already liked the comment
+        logger.info('Checking if the user has already liked the comment');
         // @ts-ignore
         const isLiked = comment.likes.includes(userId);
         if (isLiked) {
@@ -166,7 +166,7 @@ router.put('/like/:id', fetchUser, async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'Already liked the comment' });
         }
 
-        // Add the user to the likes list of the comment
+        logger.info('Liking the comment');
         // @ts-ignore
         comment.likes.push(userId);
         // @ts-ignore
@@ -190,14 +190,14 @@ router.put('/unlike/:id', fetchUser, async (req, res) => {
         const userId = req.userId;
         const commentId = req.params.id;
 
-        // Find the comment to be unliked
-        const comment = await Comment.findById(commentId);
+        logger.info('Fetching comment');
+        let comment = await Comment.findById(commentId);
         if (!comment) {
             logger.error('Comment not found');
             return res.status(404).json({ status: 'error', message: 'Comment not found' });
         }
 
-        // Check if the user has already liked the comment
+        logger.info('Checking if the user has already liked the comment');
         // @ts-ignore
         const isLiked = comment.likes.includes(userId);
         if (!isLiked) {
@@ -205,7 +205,7 @@ router.put('/unlike/:id', fetchUser, async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'Comment not liked yet' });
         }
 
-        // Remove the user from the likes list of the comment
+        logger.info('Unliking the comment');
         // @ts-ignore
         comment.likes = comment.likes.filter((id) => id !== userId);
         // @ts-ignore
@@ -229,14 +229,14 @@ router.put('/dislike/:id', fetchUser, async (req, res) => {
         const userId = req.userId;
         const commentId = req.params.id;
 
-        // Find the comment to be disliked
-        const comment = await Comment.findById(commentId);
+        logger.info('Fetching comment');
+        let comment = await Comment.findById(commentId);
         if (!comment) {
             logger.error('Comment not found');
             return res.status(404).json({ status: 'error', message: 'Comment not found' });
         }
 
-        // Check if the user has already disliked the comment
+        logger.info('Checking if the user has already disliked the comment');
         // @ts-ignore
         const isDisliked = comment.dislikes.includes(userId);
         if (isDisliked) {
@@ -244,16 +244,16 @@ router.put('/dislike/:id', fetchUser, async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'Already disliked the comment' });
         }
 
-        // Check if the user has already liked the comment
+        logger.info('Disliking the comment');
         // @ts-ignore
         const isLiked = comment.likes.includes(userId);
         if (isLiked) {
-            // Remove the user from the likes list of the comment
+            logger.info('Removing the user from the likes list of the comment');
             // @ts-ignore
             comment.likes = comment.likes.filter((id) => id !== userId);
         }
 
-        // Add the user to the dislikes list of the comment
+        logger.info('Disliking the comment');
         // @ts-ignore
         comment.dislikes.push(userId);
         // @ts-ignore
@@ -277,14 +277,14 @@ router.put('/undislike/:id', fetchUser, async (req, res) => {
         const userId = req.userId;
         const commentId = req.params.id;
 
-        // Find the comment to be undisliked
-        const comment = await Comment.findById(commentId);
+        logger.info('Fetching comment');
+        let comment = await Comment.findById(commentId);
         if (!comment) {
             logger.error('Comment not found');
             return res.status(404).json({ status: 'error', message: 'Comment not found' });
         }
 
-        // Check if the user has already disliked the comment
+        logger.info('Checking if the user has already disliked the comment');
         // @ts-ignore
         const isDisliked = comment.dislikes.includes(userId);
         if (!isDisliked) {
@@ -292,7 +292,7 @@ router.put('/undislike/:id', fetchUser, async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'Comment not disliked yet' });
         }
 
-        // Remove the user from the dislikes list of the comment
+        logger.info('Undisliking the comment');
         // @ts-ignore
         comment.dislikes = comment.dislikes.filter((id) => id !== userId);
         // @ts-ignore

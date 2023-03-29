@@ -27,7 +27,9 @@ router.post('/create', fetchUser, async (req, res) => {
         // @ts-ignore
         const userId = req.userId;
         const { text, imageURL } = req.body;
-        const user = await User.findById(userId);
+        
+        logger.info('Fetching user');
+        let user = await User.findById(userId);
         if (!user) {
             logger.error('User not found');
             return res.status(404).json({ status: 'error', message: 'User not found' });
@@ -36,7 +38,7 @@ router.post('/create', fetchUser, async (req, res) => {
         const newPost = new Post({ text, imageURL, userID: userId });
         const post = await newPost.save();
 
-        // Update posts array of the user
+        logger.info('Updating user');
         // @ts-ignore
         user.posts.push({
             postID: post._id,
@@ -65,14 +67,14 @@ router.get('/all', fetchUser, async (req, res) => {
         // @ts-ignore
         const userId = req.userId;
 
-        // Find the user
+        logger.info('Fetching user');
         const user = await User.findById(userId);
         if (!user) {
             logger.error('User not found');
             return res.status(404).json({ status: 'error', message: 'User not found' });
         }
 
-        // Find all posts of the user
+        logger.info('Fetching posts');
         // @ts-ignore
         const postObj = user.posts;
         // @ts-ignore
@@ -108,14 +110,14 @@ router.put('/update/:id', fetchUser, [
         const postId = req.params.id;
         const { text } = req.body;
 
-        // Find the post to be updated
-        const post = await Post.findById(postId);
+        logger.info('Finding the post to be updated');
+        let post = await Post.findById(postId);
         if (!post) {
             logger.error('Post not found');
             return res.status(404).json({ status: 'error', message: 'Post not found' });
         }
 
-        // Check if the user is authorized to update the post
+        logger.info('Checking if the user is authorized to update the post');
         // @ts-ignore
         if (post.userID.toString() !== userId) {
             logger.error('Unauthorized');
@@ -145,14 +147,14 @@ router.delete('/delete/:id', fetchUser, async (req, res) => {
         const userId = req.userId;
         const postId = req.params.id;
 
-        // Find the post to be deleted
+        logger.info('Finding the post to be deleted');
         const post = await Post.findById(postId);
         if (!post) {
             logger.error('Post not found');
             return res.status(404).json({ status: 'error', message: 'Post not found' });
         }
 
-        // Check if the user is authorized to delete the post
+        logger.info('Checking if the user is authorized to delete the post');
         // @ts-ignore
         if (post.userID.toString() !== userId) {
             logger.error('Unauthorized');
@@ -162,9 +164,9 @@ router.delete('/delete/:id', fetchUser, async (req, res) => {
         // Delete the post
         // @ts-ignore
         await post.remove();
-        // remove the post from the user's posts array
+        logger.info('remove the post from the user\'s posts array');
         // @ts-ignore
-        const user = await User.findById(userId);
+        let user = await User.findById(userId);
         // @ts-ignore
         user.posts = user.posts.filter(post => post.postID.toString() !== postId);
         // @ts-ignore
@@ -188,14 +190,14 @@ router.put('/like/:id', fetchUser, async (req, res) => {
         const userId = req.userId;
         const postId = req.params.id;
 
-        // Find the post to be liked
-        const post = await Post.findById(postId);
+        logger.info('Finding the post');
+        let post = await Post.findById(postId);
         if (!post) {
             logger.error('Post not found');
             return res.status(404).json({ status: 'error', message: 'Post not found' });
         }
 
-        // Check if the user has already liked the post
+        logger.info('Checking if the user has already liked the post')
         // @ts-ignore
         const isLiked = post.likes.includes(userId);
         if (isLiked) {
@@ -203,7 +205,7 @@ router.put('/like/:id', fetchUser, async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'Already liked the post' });
         }
 
-        // Add the user to the likes list of the post
+        logger.info('Adding the user to the post.likes array');
         // @ts-ignore
         post.likes.push(userId);
         // @ts-ignore
@@ -228,13 +230,13 @@ router.put('/unlike/:id', fetchUser, async (req, res) => {
         const postId = req.params.id;
 
         // Find the post to be liked
-        const post = await Post.findById(postId);
+        let post = await Post.findById(postId);
         if (!post) {
             logger.error('Post not found');
             return res.status(404).json({ status: 'error', message: 'Post not found' });
         }
 
-        // Check if the user has already liked the post
+        logger.info('Checking if the user has already liked the post');
         // @ts-ignore
         const isLiked = post.likes.includes(userId);
         if (!isLiked) {
@@ -242,7 +244,7 @@ router.put('/unlike/:id', fetchUser, async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'Already not liked the post' });
         }
 
-        // Remove the user from the likes list of the post
+        logger.info('Removing the user id from the post\'s likes array');
         // @ts-ignore
         post.likes = post.likes.filter((id) => id !== userId);
         // @ts-ignore

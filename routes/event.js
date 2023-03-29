@@ -35,7 +35,6 @@ router.post('/create', fetchUser, [
     }
 
     try {
-        // Create a new event
         const { title, description, location, meetingURL, dateTime, isOnline, imageURL } = req.body;
         const event = new Event({
             title,
@@ -86,7 +85,7 @@ router.put('/update/:id', fetchUser, async (req, res) => {
         const eventId = req.params.id;
         const { title, description, location, meetingURL, dateTime, isOnline, imageURL } = req.body;
 
-        // Create a new event object
+        logger.info('Creating a new event')
         const newEvent = {};
         if (title) newEvent.title = title;
         if (description) newEvent.description = description;
@@ -96,20 +95,37 @@ router.put('/update/:id', fetchUser, async (req, res) => {
         if (isOnline !== null) newEvent.isOnline = isOnline;
         if (imageURL || imageURL === '') newEvent.imageURL = imageURL;
 
-        // Find the event to be updated and update it, remember thaat creator is an object
-        const event = await Event.findOneAndUpdate({
-            _id: eventId,
-            'creator.id': userId
-        }, { $set: newEvent }, { new: true });
+        logger.info('Finding the event to be updated');
+        const event = await Event.findById(eventId);
         if (!event) {
             logger.error('Event not found');
             return res.status(404).json({ status: 'error', message: 'Event not found' });
         }
 
-        if (event.creator.id.toString() !== userId) {
+        logger.info('Checking if the user is authorized to update the event');
+        if (event.creator.toString() !== userId) {
             logger.error('Not allowed');
             return res.status(401).json({ status: 'error', message: 'Not allowed' });
         }
+
+        logger.info('Updating the event');
+
+        // @ts-ignore
+        event.title = newEvent.title || event.title;
+        // @ts-ignore
+        event.description = newEvent.description || event.description;
+        // @ts-ignore
+        event.location = newEvent.location || event.location;
+        // @ts-ignore
+        event.meetingURL = newEvent.meetingURL || event.meetingURL;
+        // @ts-ignore
+        event.dateTime = newEvent.dateTime || event.dateTime;
+        // @ts-ignore
+        if(newEvent.isOnline !== null) event.isOnline = newEvent.isOnline;
+        // @ts-ignore
+        event.imageURL = newEvent.imageURL || event.imageURL;
+
+        await event.save(); 
 
         logger.info('Event updated successfully');
         res.json({ status: 'success', message: 'Event updated successfully', data: event });
@@ -128,13 +144,14 @@ router.delete('/delete/:id', fetchUser, async (req, res) => {
         const userId = req.userId;
         const eventId = req.params.id;
 
-        // Find the event to be deleted and delete it
+        logger.info('Finding the event to be deleted');
         const event = await Event.findByIdAndDelete({ _id: eventId, creator: userId });
         if (!event) {
             logger.error('Event not found');
             return res.status(404).json({ status: 'error', message: 'Event not found' });
         }
 
+        logger.info('Checking if the user is authorized to delete the event');
         if (event.creator.toString() !== userId) {
             logger.error('Not allowed');
             return res.status(401).json({ status: 'error', message: 'Not allowed' });
@@ -170,16 +187,20 @@ router.put('/register/:id', fetchUser, async (req, res) => {
         const userId = req.userId;
         const eventId = req.params.id;
 
-        // Find the event to be attended and attend it
-        const event = await Event.findById(eventId);
+        logger.info('Finding the event to be registered');
+        let event = await Event.findById(eventId);
         if (!event) {
             logger.error('Event not found');
             return res.status(404).json({ status: 'error', message: 'Event not found' });
         }
+
+        logger.info('Checking if the user is already registered in the event');
         if (event.attendees.find(attendee => attendee.userId.toString() === userId.toString())) {
             logger.error('Already registered the event');
             return res.status(400).json({ status: 'error', message: 'Already registered the event' });
         }
+
+        logger.info('Registering the user in the event');
         event.attendees.push({
             // @ts-ignore
             userId: userId,

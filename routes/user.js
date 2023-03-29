@@ -47,13 +47,14 @@ router.put('/profile/update', fetchUser, async (req, res) => {
 
         // Check if the username already exists and is not the current user's username and is valid
         if (username) {
+            logger.info('Checking if username already exists');
             const user = await User.findOne({ username });
             if (user && user._id.toString() !== userId) {
                 logger.error('Username already exists');
                 return res.status(400).json({ status: 'error', message: 'Username already exists' });
             }
 
-            // Check if the username is valid
+            logger.info('Validating username');
             if (!validateUsername(username)) {
                 logger.error('Invalid username');
                 return res.status(400).json({ status: 'error', message: 'Invalid username' });
@@ -61,7 +62,7 @@ router.put('/profile/update', fetchUser, async (req, res) => {
         }
 
         // Create a new user object
-        const newUser = {};
+        let newUser = {};
         if (name) newUser.name = name;
         if (username) newUser.username = username;
         if (bio || bio === '') newUser.bio = bio;
@@ -71,7 +72,7 @@ router.put('/profile/update', fetchUser, async (req, res) => {
         if (country) newUser.country = country;
         if (dob) newUser.dob = dob;
 
-        // Find the user to be updated and update it
+        logger.info('Finding and updating the user');
         const user = await User.findByIdAndUpdate(userId, { $set: newUser }, { new: true });
         if (!user) {
             logger.error('User not found');
@@ -92,14 +93,18 @@ router.get('/search/:username', fetchUser, async (req, res) => {
         const usernameToSearch = req.params.username;
         // @ts-ignore
         const userId = req.userId;
-        // Find the user
+        
+        logger.info('Finding the user');
         const user = await User.findById(userId);
+
+        logger.info('Finding the user to search');
         const userToSearch = await User.findOne({ username: usernameToSearch }).select('-password');
         if (!userToSearch) {
             logger.error('User not found');
             return res.status(404).json({ status: 'error', message: 'User not found' });
         }
 
+        logger.info('Checking if the user is following the user to be searched');
         // @ts-ignore
         const isFollowing = user.following?.some((user) => user.userID.toString() === userToSearch._id.toString());
         logger.info('User found');
@@ -119,21 +124,21 @@ router.put('/follow/:id', fetchUser, async (req, res) => {
         const userId = req.userId;
         const followId = req.params.id;
 
-        // Find the user to be followed
-        const userToFollow = await User.findById(followId);
+        logger.info('Finding the user to be followed');
+        let userToFollow = await User.findById(followId);
         if (!userToFollow) {
             logger.error('User not found');
             return res.status(404).json({ status: 'error', message: 'User not found' });
         }
 
-        // Find the user
-        const user = await User.findById(userId);
+        logger.info('Finding the user');
+        let user = await User.findById(userId);
         if (!user) {
             logger.error('User not found');
             return res.status(404).json({ status: 'error', message: 'User not found' });
         }
 
-        // Check if the user is already following the user to be followed
+        logger.info('Checking if the user is already following the user to be followed');
         // @ts-ignore
         const isFollowing = user.following?.some((user) => user.userID.toString() === followId);
         if (isFollowing) {
@@ -141,7 +146,7 @@ router.put('/follow/:id', fetchUser, async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'Already following' });
         }
 
-        // Add the user to be followed to the following list of the user
+        logger.info('Adding the user to the following list of the user');
         // @ts-ignore
         user.following.push({
             userID: followId,
@@ -155,7 +160,7 @@ router.put('/follow/:id', fetchUser, async (req, res) => {
         // @ts-ignore
         await user.save();
 
-        // Add the user to the followers list of the user to be followed
+        logger.info('Adding the user to the followers list of the user to be followed');
         // @ts-ignore
         userToFollow.followers.push({
             userID: userId,
@@ -186,21 +191,21 @@ router.put('/unfollow/:id', fetchUser, async (req, res) => {
         const userId = req.userId;
         const unfollowId = req.params.id;
 
-        // Find the user to be unfollowed
-        const userToUnfollow = await User.findById(unfollowId);
+        logger.info('Finding the user to be unfollowed');
+        let userToUnfollow = await User.findById(unfollowId);
         if (!userToUnfollow) {
             logger.error('User not found');
             return res.status(404).json({ status: 'error', message: 'User not found' });
         }
 
-        // Find the user
-        const user = await User.findById(userId);
+        logger.info('Finding the user');
+        let user = await User.findById(userId);
         if (!user) {
             logger.error('User not found');
             return res.status(404).json({ status: 'error', message: 'User not found' });
         }
 
-        // Check if the user is following the user to be unfollowed
+        logger.info('Checking if the user is already following the user to be unfollowed');
         // @ts-ignore
         const isFollowing = user.following.some((user) => user.userID.toString() === unfollowId);
         if (!isFollowing) {
@@ -208,13 +213,13 @@ router.put('/unfollow/:id', fetchUser, async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'Already not following the user' });
         }
 
-        // Remove the user to be unfollowed from the following list of the user
+        logger.info('Removing the user from the following list of the user');
         // @ts-ignore
         user.following = user.following.filter((user) => user.userID.toString() !== unfollowId);
         // @ts-ignore
         await user.save();
         
-        // Remove the user from the followers list of the user to be unfollowed
+        logger.info('Removing the user from the followers list of the user to be unfollowed');
         // @ts-ignore
         userToUnfollow.followers = userToUnfollow.followers.filter((user) => user.userID.toString() !== userId);
         // @ts-ignore

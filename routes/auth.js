@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
 const { body, validationResult } = require('express-validator');
+const ejs = require('ejs');
+const path = require('path');
 
 // Models
 const User = require('../models/User');
@@ -34,10 +36,12 @@ router.post('/signup',
             return res.status(400).json({ status: 'error', errors: errors.array() });
         }
 
+        logger.info('Validating password');
         if (!validatePassword(req.body.password)) {
             return res.status(400).json({ status: 'error', message: "Password should be of 8 characters long and should be less than 16 characters. It should contain at least one uppercase, one lowercase, and one number" });
         }
 
+        logger.info('Validating username');
         if(!validateUsername(req.body.username)) {
             return res.status(400).json({ status: 'error', message: "Username should be more then 3 characters. It can contain alphanumeric data" });
         }
@@ -46,6 +50,7 @@ router.post('/signup',
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
             logger.debug('Hashed password: ' + hashedPassword);
 
+            logger.info('Creating user');
             const user = await User.create({
                 name: req.body.name,
                 username: req.body.username,
@@ -54,6 +59,7 @@ router.post('/signup',
                 gender: req.body.gender
             });
 
+            logger.info('Sending verification email');
             // @ts-ignore
             await sendVerificationMail(req.body.email, req.body.name, jwt.sign({ email: req.body.email }, JWT_SECRET, { expiresIn: '30d' }));
 
@@ -75,19 +81,36 @@ router.get('/verify-email/:token', async (req, res) => {
         const token = req.params.token;
         // @ts-ignore
         const decoded = jwt.verify(token, JWT_SECRET, { maxAge: '1d' });
-        const user = await User.findOne({ email: decoded.email });
+
+        logger.info('Fetching user')
+        let user = await User.findOne({ email: decoded.email });
         if (user === null) {
             logger.error('Email verification failed: No user found');
             return res.status(404).json({ status: 'error', message: 'User not found' });
         }
+
+        logger.info('Checking if email is already verified');
         if (user.isEmailVerified === true) {
             logger.error('Email verification failed: Email already verified');
-            return res.status(400).json({ status: 'error', message: 'Email already verified' });
+            ejs.renderFile(path.join(__dirname, '../views/email-already-verified.ejs'), { name: user.name }, (err, data) => {
+                if (err) {
+                    logger.error('Email verification failed: ' + err.message);
+                    return res.status(500).json({ status: 'error', message: err.message });
+                }
+                res.send(data);
+            });
         }
         user.isEmailVerified = true;
         await user.save();
         logger.info('Email verification successful');
-        res.status(200).json({ status: 'success', message: 'Email verified successfully! Now, please proceed to login page.' });
+        // Render the email verification success page
+        ejs.renderFile(path.join(__dirname, '../views/email-verification-success.ejs'), { name: user.name }, (err, data) => {
+            if (err) {
+                logger.error('Email verification failed: ' + err.message);
+                return res.status(500).json({ status: 'error', message: err.message });
+            }
+            res.send(data);
+        });
     } catch (error) {
         logger.error('Email verification failed: ', error.message);
         res.status(500).json({ status: 'error', message: error.message });
@@ -108,24 +131,28 @@ router.post('/login', [
         return res.status(400).json({ status: 'error', errors: errors.array() });
     }
     try {
+        logger.info('Fetching user');
         const user = await User.findOne({ email: req.body.email });
         logger.debug('User details: ' + user);
         if (user === null) {
             logger.error('Login failed: No user found');
             return res.status(404).json({ status: 'error', message: 'User not found' });
         }
-        // check if user is email verified
+        
+        logger.info('Checking if email is verified');
         if (user.isEmailVerified === false) {
             logger.error('Login failed: Email not verified');
             return res.status(401).json({ status: 'error', message: 'Email not verified' });
         }
-        // check if password is correct
+        
+        logger.info('Checking if password is correct');
         const isPasswordCorrect = await bcrypt.compare(req.body.password, user.password);
         if (isPasswordCorrect === false) {
             logger.error('Login failed: Incorrect password');
             return res.status(401).json({ status: 'error', message: 'Incorrect password' });
         }
-        // create and assign a token
+        
+        logger.info('Generating token');
         // @ts-ignore
         const token = jwt.sign({ 
             id: user._id,
@@ -155,6 +182,7 @@ router.post('/forgot-password', [
     }
     try {
         logger.info('Processing forgot password request');
+        logger.info('Fetching user');
         const user = await User.findOne({ email: req.body.email });
         logger.debug('User details: ' + user);
         if (user === null) {
@@ -162,6 +190,7 @@ router.post('/forgot-password', [
             return res.status(404).json({ status: 'error', message: 'User not found' });
         }
 
+        logger.info('Generating token');
         // @ts-ignore
         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '30d' });
         logger.debug('Token: ' + token);
@@ -185,6 +214,7 @@ router.get('/reset-password/:token', async (req, res) => {
         const decoded = jwt.verify(req.params.token, JWT_SECRET);
         logger.debug('Decoded token: ' + decoded);
 
+        logger.info('Fetching user');
         const user = await User.findOne({ _id: decoded.id });
         logger.debug('User details: ' + user);
         if (user === null) {
@@ -226,7 +256,7 @@ router.post('/reset-password/:token', [
         const decoded = jwt.verify(req.params.token, JWT_SECRET);
         logger.debug('Decoded token: ' + decoded);
 
-        const user = await User.findOne({ _id: decoded.id });
+        let user = await User.findOne({ _id: decoded.id });
         logger.debug('User found: ' + user);
         if (user === null) {
             logger.error('Reset password failed: No user found');

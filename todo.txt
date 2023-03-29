@@ -4,6 +4,7 @@ proper documentation of functions
 make different file for helper functions
 resend verification mail
 delete user profile
+test event update api
 
 private operations (Followers, posts etc) - new middleware
 
