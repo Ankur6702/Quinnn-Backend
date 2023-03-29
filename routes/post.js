@@ -43,7 +43,8 @@ router.post('/create', fetchUser, async (req, res) => {
             text: post.text,
             imageURL: post.imageURL,
             creationDate: post.creationDate,
-            numberOfLikes: post.likes.length
+            likes: post.likes,
+            comments: post.comments
         });
         //  @ts-ignore
         await user.save();
@@ -161,8 +162,16 @@ router.delete('/delete/:id', fetchUser, async (req, res) => {
         // Delete the post
         // @ts-ignore
         await post.remove();
+        // remove the post from the user's posts array
+        // @ts-ignore
+        const user = await User.findById(userId);
+        // @ts-ignore
+        user.posts = user.posts.filter(post => post.postID.toString() !== postId);
+        // @ts-ignore
+        await user.save();
+
         logger.info('Post deleted successfully');
-        res.status(200).json({ status: 'success', message: 'Post deleted successfully' });
+        res.status(200).json({ status: 'success', message: 'Post deleted successfully', updatedUser: user });
     } catch (error) {
         logger.error('Internal Server Error: ', error.message);
         res.status(500).json({ status: 'error', message: error.message });
