@@ -46,6 +46,26 @@ router.get('/posts', async (req, res) => {
     }
 });
 
+// To get all the posts of a user
+router.get('/fetchPosts/:userId', async (req, res) => {
+    logger.info('Getting all the posts of a user');
+    try {
+        const userId = req.params.userId;
+        // @ts-ignore
+        logger.info('Fetching posts of user');
+        const posts = await Post.find({ userID: userId });
+        if (!posts) {
+            logger.error('Posts not found');
+            return res.status(404).json({ status: 'error', message: 'Posts not found' });
+        }
+        logger.info('Posts found');
+        res.status(200).json({ status: 'success', message: 'Posts found', data: posts });
+    } catch (error) {
+        logger.error('Internal Server Error: ', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
 // Search a user using userId
 router.get('/fetchUser/:userId', async (req, res) => {
     logger.info('Searching a user');
