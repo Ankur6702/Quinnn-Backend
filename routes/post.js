@@ -42,7 +42,8 @@ router.post('/create', fetchUser, async (req, res) => {
                 userID: user._id,
                 username: user.username,
                 profileImageURL: user.profileImageURL,
-                name: user.name
+                name: user.name,
+                gender: user.gender
             }
         });
         const post = await newPost.save();
