@@ -31,7 +31,7 @@ router.get('/posts', async (req, res) => {
             posts.sort((a, b) => b.likes.length - a.likes.length);
         } else {
             // @ts-ignore
-            posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            posts.sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate));
         }
         // @ts-ignore
         const startIndex = (page - 1) * limit;

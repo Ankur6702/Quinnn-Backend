@@ -7,9 +7,10 @@ const PostSchema = new Schema({
         required: true,
         trim: true
     },
-    user: {
-        type: Object,
-        required: true,
+    userID: {
+        type: Schema.Types.ObjectId,
+        ref: 'user',
+        required: true
     },
     imageURL: {
         type: String,
