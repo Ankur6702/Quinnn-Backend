@@ -188,6 +188,20 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
+  /checkToxicity:
+    post:
+      tags:
+        - Common
+      summary: Check Toxicity of a text
+      requestBody:
+        $ref: '#/components/requestBodies/CheckToxicity'
+      responses:
+        '200':
+          description: Toxicity Score Fetched Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
   /user/profile:
     get:
       tags:
@@ -918,6 +932,11 @@ components:
           format: date-time
         imageURL:
           type: string
+    CheckToxicityInput:
+      type: object
+      properties:
+        text:
+          type: string
   securitySchemes:
     bearerAuth:
       name: Authorization
@@ -986,3 +1005,9 @@ components:
           schema:
             $ref: '#/components/schemas/UpdateEventInput'
         description: Update Event
+    CheckToxicity:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CheckToxicityInput'
+        description: Check Toxicity
