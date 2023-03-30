@@ -6,9 +6,5 @@ resend verification mail
 delete user profile
 
 private operations (Followers, posts etc) - new middleware
-
 private profile follow request
-
-
 test event update api
-like api
