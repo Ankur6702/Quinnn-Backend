@@ -35,7 +35,16 @@ router.post('/create', fetchUser, async (req, res) => {
             return res.status(404).json({ status: 'error', message: 'User not found' });
         }
 
-        const newPost = new Post({ text, imageURL, userID: userId });
+        const newPost = new Post({ 
+            text, 
+            imageURL, 
+            user: {
+                userID: user._id,
+                username: user.username,
+                profileImageURL: user.profileImageURL,
+                name: user.name
+            }
+        });
         const post = await newPost.save();
 
         logger.info('Updating user');
@@ -119,7 +128,7 @@ router.put('/update/:id', fetchUser, [
 
         logger.info('Checking if the user is authorized to update the post');
         // @ts-ignore
-        if (post.userID.toString() !== userId) {
+        if (post.user.userID.toString() !== userId) {
             logger.error('Unauthorized');
             return res.status(401).json({ status: 'error', message: 'Unauthorized' });
         }
@@ -156,7 +165,7 @@ router.delete('/delete/:id', fetchUser, async (req, res) => {
 
         logger.info('Checking if the user is authorized to delete the post');
         // @ts-ignore
-        if (post.userID.toString() !== userId) {
+        if (post.user.userID.toString() !== userId) {
             logger.error('Unauthorized');
             return res.status(401).json({ status: 'error', message: 'Unauthorized' });
         }
