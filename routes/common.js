@@ -70,7 +70,7 @@ router.get('/fetchPosts/:userId', async (req, res) => {
 router.get('/fetchUser/:userId', async (req, res) => {
     logger.info('Searching a user');
     try {
-        const userId = req.params;
+        const userId = req.params.userId;
         // @ts-ignore
         const user = await User.findById(userId);
         if (!user) {
