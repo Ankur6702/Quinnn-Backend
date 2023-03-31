@@ -12,6 +12,11 @@
 
 [API Documentation](https://quinnn.azurewebsites.net/docs/)
 
+<div style="display:flex; flex-wrap:wrap;">
+  <img src="https://user-images.githubusercontent.com/74523865/229041366-33fb2cc2-8b26-4bd1-a659-08d6177ca388.png" style="width:49%;">
+  <img src="https://user-images.githubusercontent.com/74523865/229039930-963d5e51-f59a-4b11-9d65-111322f6834d.png" style="width:49%;">
+</div>
+
 ## Environment Variables
 
 To run this project, you will need to add the following environment variables to your .env file
