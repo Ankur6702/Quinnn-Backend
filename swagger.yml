@@ -6,10 +6,10 @@ info:
   contact:
     email: ankuragarwa246@gmail.com
 servers:
-  - url: https://lgbtq-backend-free.azurewebsites.net/api
-    description: Production Server (Azure)
   - url: http://localhost:9999/api
     description: Development server
+  - url: https://quinnn.azurewebsites.net/api
+    description: Production Server
 paths:
   /auth/signup:
     post:

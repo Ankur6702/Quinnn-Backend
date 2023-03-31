@@ -1,5 +1,5 @@
 {
-  "name": "lgbtq-soiclal-media-backend",
+  "name": "quinnn-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ankur6702/LGBTQ-Soiclal-Media-Backend.git"
+    "url": "git+https://github.com/Ankur6702/Quinnn-Backend.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Ankur6702/LGBTQ-Soiclal-Media-Backend/issues"
+    "url": "https://github.com/Ankur6702/Quinnn-Backend/issues"
   },
-  "homepage": "https://github.com/Ankur6702/LGBTQ-Soiclal-Media-Backend#readme",
+  "homepage": "https://github.com/Ankur6702/Quinnn-Backend#readme",
   "dependencies": {
     "axios": "^1.3.4",
     "bcryptjs": "^2.4.3",
