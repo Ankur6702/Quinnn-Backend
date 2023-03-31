@@ -4,7 +4,6 @@ const { Schema } = mongoose;
 const PostSchema = new Schema({
     text: {
         type: String,
-        required: true,
         trim: true
     },
     userID: {

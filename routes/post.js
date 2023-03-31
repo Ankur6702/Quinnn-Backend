@@ -8,7 +8,6 @@ const { fetchUser } = require('../middleware/fetchUser');
 // Models
 const User = require('../models/User');
 const Post = require('../models/Post');
-const Comment = require('../models/Comment');
 
 // Local functions
 const logger = require('../logger');
