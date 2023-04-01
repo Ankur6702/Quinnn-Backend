@@ -65,3 +65,5 @@ Start the server in development mode with
 ## Feedback or Support
 
 For any feedback or support, email us on 2020kucp1096@iiitkota.ac.in.
+
+<div align="center"><img src="https://i.postimg.cc/sDCtHhzY/logo.png" width=20% height=20%></div>
