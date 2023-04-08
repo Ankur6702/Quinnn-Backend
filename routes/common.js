@@ -67,6 +67,69 @@ router.get('/fetchPosts/:userId', async (req, res) => {
     }
 });
 
+// To get a particular post
+router.get('/fetchPost/:postId', async (req, res) => {
+    logger.info('Getting a particular post');
+    try {
+        const { page = 1, limit = 10 } = req.query;
+        const postId = req.params.postId;
+        // @ts-ignore
+        logger.info('Fetching a post');
+        const post = await Post.find({ _id: postId });
+        if (!post) {
+            logger.error('Post not found');
+            return res.status(404).json({ status: 'error', message: 'Post not found' });
+        }
+        logger.info('Post found');
+        res.status(200).json({ status: 'success', message: 'Post found', data: post });
+    } catch (error) {
+        logger.error('Internal Server Error: ', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+// Get all followers of a user
+router.get('/fetchFollowers/:userId', async (req, res) => {
+    logger.info('Getting all the followers of a user');
+    try {
+        const userId = req.params.userId;
+        console.log(userId);
+        // @ts-ignore
+        const user = await User.findById(userId);
+        console.log(user);
+        if (!user) {
+            logger.error('User not found');
+            return res.status(404).json({ status: 'error', message: 'User not found' });
+        }
+        logger.info('User found');
+        logger.info('Fetching followers of user');
+        let followers = user.followers;
+        if (!followers) {
+            logger.error('Followers not found');
+            return res.status(404).json({ status: 'error', message: 'Followers not found' });
+        }
+        // It contains only the userIds of the followers. Now we need to fetch the details of the followers
+        followers = await Promise.all(
+            // @ts-ignore
+            followers.map(async (follower) => {
+                // @ts-ignore
+                const followerDetails = await User.findById(follower);
+                return followerDetails;
+            })
+        );
+        // @ts-ignore
+        const startIndex = (page - 1) * limit;
+        // @ts-ignore
+        const endIndex = page * limit;
+        const results = followers.slice(startIndex, endIndex);
+        logger.info('Followers found');
+        res.status(200).json({ status: 'success', message: 'Followers found', data: followers });
+    } catch (error) {
+        logger.error('Internal Server Error: ', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
 // Search a user using userId
 router.get('/fetchUser/:userId', async (req, res) => {
     logger.info('Searching a user');
@@ -115,7 +178,7 @@ router.get('/users', async (req, res) => {
 router.get('/events', async (req, res) => {
     logger.info('Fetching all events');
     try {
-        const { page = 1, limit = 10 , sort = 'popular'} = req.query;
+        const { page = 1, limit = 10, sort = 'popular' } = req.query;
         // @ts-ignore
         const events = await Event.find();
         if (!events) {

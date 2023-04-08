@@ -45,7 +45,7 @@ router.post('/create', fetchUser, [
             isOnline,
             imageURL,
             // @ts-ignore
-            creator: { name: req.name, username: req.username, id: req.userId }
+            creator: req.userId
         });
         const savedEvent = await event.save();
         logger.info('Event created successfully');

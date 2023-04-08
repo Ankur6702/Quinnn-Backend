@@ -140,7 +140,7 @@ router.put('/follow/:id', fetchUser, async (req, res) => {
 
         logger.info('Checking if the user is already following the user to be followed');
         // @ts-ignore
-        const isFollowing = user.following?.some((user) => user.userID.toString() === followId);
+        const isFollowing = user.following.includes(followId);
         if (isFollowing) {
             logger.error('Already following');
             return res.status(400).json({ status: 'error', message: 'Already following' });
@@ -148,29 +148,13 @@ router.put('/follow/:id', fetchUser, async (req, res) => {
 
         logger.info('Adding the user to the following list of the user');
         // @ts-ignore
-        user.following.push({
-            userID: followId,
-            name: userToFollow.name,
-            username: userToFollow.username,
-            profileImageURL: userToFollow.profileImageURL,
-            gender: userToFollow.gender,
-            // @ts-ignore
-            numberOfFollowers: userToFollow.followers.length
-        });
+        user.following.push(userToFollow._id);
         // @ts-ignore
         await user.save();
 
         logger.info('Adding the user to the followers list of the user to be followed');
         // @ts-ignore
-        userToFollow.followers.push({
-            userID: userId,
-            name: user.name,
-            username: user.username,
-            profileImageURL: user.profileImageURL,
-            gender: user.gender,
-            // @ts-ignore
-            numberOfFollowers: user.followers.length
-        });
+        userToFollow.followers.push(user._id);
         // @ts-ignore
         await userToFollow.save();
 
@@ -207,7 +191,7 @@ router.put('/unfollow/:id', fetchUser, async (req, res) => {
 
         logger.info('Checking if the user is already following the user to be unfollowed');
         // @ts-ignore
-        const isFollowing = user.following.some((user) => user.userID.toString() === unfollowId);
+        const isFollowing = user.following.includes(unfollowId);
         if (!isFollowing) {
             logger.error('Already not following the user');
             return res.status(400).json({ status: 'error', message: 'Already not following the user' });
@@ -215,13 +199,13 @@ router.put('/unfollow/:id', fetchUser, async (req, res) => {
 
         logger.info('Removing the user from the following list of the user');
         // @ts-ignore
-        user.following = user.following.filter((user) => user.userID.toString() !== unfollowId);
+        user.following = user.following.filter((id) => id !== unfollowId);
         // @ts-ignore
         await user.save();
         
         logger.info('Removing the user from the followers list of the user to be unfollowed');
         // @ts-ignore
-        userToUnfollow.followers = userToUnfollow.followers.filter((user) => user.userID.toString() !== userId);
+        userToUnfollow.followers = userToUnfollow.followers.filter((id) => id !== userId);
         // @ts-ignore
         await userToUnfollow.save();
 

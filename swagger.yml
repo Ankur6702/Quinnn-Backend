@@ -128,6 +128,44 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
+  /fetchPost/{postId}:
+    get:
+      tags:
+        - Common
+      summary: Get a post
+      parameters:
+        - in: path
+          name: postId
+          description: Post ID
+          schema:
+            type: string
+            format: ObjectId
+      responses:
+        '200':
+          description: Post Fetched Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /fetchFollowers/{userId}:
+    get:
+      tags:
+        - Common
+      summary: Get all followers of a particular user
+      parameters:
+        - in: path
+          name: userId
+          description: User ID
+          schema:
+            type: string
+            format: ObjectId
+      responses:
+        '200':
+          description: Followers Fetched Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
   /events:
     get:
       tags:
