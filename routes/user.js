@@ -106,7 +106,7 @@ router.get('/search/:username', fetchUser, async (req, res) => {
 
         logger.info('Checking if the user is following the user to be searched');
         // @ts-ignore
-        const isFollowing = user?.following?.includes(userToSearch._id);
+        const isFollowing = user?.following?.includes(userToSearch._id.toString());
         logger.info('User found');
         res.status(200).json({ status: 'success', message: 'User found', data: userToSearch, isFollowing });
     } catch (error) {
@@ -148,13 +148,13 @@ router.put('/follow/:id', fetchUser, async (req, res) => {
 
         logger.info('Adding the user to the following list of the user');
         // @ts-ignore
-        user.following.push(userToFollow._id);
+        user.following.push(followId);
         // @ts-ignore
         await user.save();
 
         logger.info('Adding the user to the followers list of the user to be followed');
         // @ts-ignore
-        userToFollow.followers.push(user._id);
+        userToFollow.followers.push(userId);
         // @ts-ignore
         await userToFollow.save();
 
