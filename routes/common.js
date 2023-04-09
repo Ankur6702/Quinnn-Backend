@@ -123,6 +123,43 @@ router.get('/fetchFollowers/:userId', async (req, res) => {
     }
 });
 
+
+// Get all the users that a user is following
+router.get('/fetchFollowing/:userId', async (req, res) => {
+    logger.info('Getting all the users that a user is following');
+    try {
+        const userId = req.params.userId;
+        // @ts-ignore
+        const user = await User.findById(userId);
+        if (!user) {
+            logger.error('User not found');
+            return res.status(404).json({ status: 'error', message: 'User not found' });
+        }
+        logger.info('User found');
+        logger.info('Fetching users that a user is following');
+        let following = user.following;
+        if (!following) {
+            logger.error('Following not found');
+            return res.status(404).json({ status: 'error', message: 'Following not found' });
+        }
+        // It contains only the userIds of the users that the user is following. Now we need to fetch the details of the users
+        following = await Promise.all(
+            // @ts-ignore
+            following.map(async (follow) => {
+                // @ts-ignore
+                const followDetails = await User.findById(follow);
+                return followDetails;
+            })
+        );
+        logger.info('Following found');
+        res.status(200).json({ status: 'success', message: 'Following found', data: following });
+    } catch (error) {
+        logger.error('Internal Server Error: ', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+
 // Search a user using userId
 router.get('/fetchUser/:userId', async (req, res) => {
     logger.info('Searching a user');

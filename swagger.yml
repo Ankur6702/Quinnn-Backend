@@ -166,6 +166,25 @@ paths:
           description: Unauthorized
         '500':
           description: Internal Server Error
+  /fetchFollowing/{userId}:
+    get:
+      tags:
+        - Common
+      summary: Get all following of a particular user
+      parameters:
+        - in: path
+          name: userId
+          description: User ID
+          schema:
+            type: string
+            format: ObjectId
+      responses:
+        '200':
+          description: Following Fetched Successfully
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
   /events:
     get:
       tags:

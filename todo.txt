@@ -7,7 +7,10 @@ delete user profile
 
 private operations (Followers, posts etc) - new middleware
 private profile follow request
-test event update api
 
 Blogs
 comments like/dislike toggle
+api to fetch events created by a particular user
+upcoming events + ongoing events
+automate meetig url
+test event update api
