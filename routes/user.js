@@ -106,7 +106,7 @@ router.get('/search/:username', fetchUser, async (req, res) => {
 
         logger.info('Checking if the user is following the user to be searched');
         // @ts-ignore
-        const isFollowing = user.following?.some((user) => user.userID.toString() === userToSearch._id.toString());
+        const isFollowing = user?.following?.includes(userToSearch._id);
         logger.info('User found');
         res.status(200).json({ status: 'success', message: 'User found', data: userToSearch, isFollowing });
     } catch (error) {

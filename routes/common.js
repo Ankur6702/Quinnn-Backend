@@ -93,10 +93,8 @@ router.get('/fetchFollowers/:userId', async (req, res) => {
     logger.info('Getting all the followers of a user');
     try {
         const userId = req.params.userId;
-        console.log(userId);
         // @ts-ignore
         const user = await User.findById(userId);
-        console.log(user);
         if (!user) {
             logger.error('User not found');
             return res.status(404).json({ status: 'error', message: 'User not found' });
@@ -117,11 +115,6 @@ router.get('/fetchFollowers/:userId', async (req, res) => {
                 return followerDetails;
             })
         );
-        // @ts-ignore
-        const startIndex = (page - 1) * limit;
-        // @ts-ignore
-        const endIndex = page * limit;
-        const results = followers.slice(startIndex, endIndex);
         logger.info('Followers found');
         res.status(200).json({ status: 'success', message: 'Followers found', data: followers });
     } catch (error) {
