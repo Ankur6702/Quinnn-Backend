@@ -10,7 +10,5 @@ private profile follow request
 
 Blogs
 comments like/dislike toggle
-api to fetch events created by a particular user
-upcoming events + ongoing events
 automate meetig url
-test event update api
+Check past, upcoming, ongoing event apis

@@ -17,16 +17,13 @@ const EventSchema = new Schema({
         maxlength: 500
     },
     creator: {
-        type: Object,
+        type: Schema.Types.ObjectId,
+        ref: 'user',
         required: true,
     },
     isOnline: {
         type: Boolean,
         required: true,
-    },
-    meetingURL: {
-        type: String,
-        required: false,
     },
     location: {
         type: String,
@@ -35,8 +32,24 @@ const EventSchema = new Schema({
         minlength: 3,
         maxlength: 200
     },
-    dateTime: {
-        type: Date,
+    meetingURL: {
+        type: String,
+        required: false,
+    },
+    startDate: {
+        type: String,
+        required: true,
+    },
+    startTime: {
+        type: String,
+        required: true,
+    },
+    endDate: {
+        type: String,
+        required: true,
+    },
+    endTime: {
+        type: String,
         required: true,
     },
     imageURL: {
