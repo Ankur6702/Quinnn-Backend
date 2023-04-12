@@ -90,7 +90,7 @@ router.put('/update/:id', fetchUser, async (req, res) => {
         const { title, description, location, meetingURL, imageURL, startDate, startTime, endDate, endTime } = req.body;
 
         logger.info('Finding the event to be updated');
-        const event = await Event.findById(eventId);
+        let event = await Event.findById(eventId);
         if (!event) {
             logger.error('Event not found');
             return res.status(404).json({ status: 'error', message: 'Event not found' });

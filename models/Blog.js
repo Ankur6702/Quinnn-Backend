@@ -11,7 +11,7 @@ const BlogSchema = new Schema({
         type: String,
         required: true
     },
-    userID: {
+    author: {
         type: Schema.Types.ObjectId,
         ref: 'user',
         required: true
@@ -20,16 +20,12 @@ const BlogSchema = new Schema({
         type: String,
         required: false,
     },
-    upvote: {
+    upvotes: {
         type: Array,
         default: []
     },
-    downvote: {
+    downvotes: {
         type: Array,
-        default: []
-    },
-    comments: {
-        tlikesype: Array,
         default: []
     },
     creationDate: {

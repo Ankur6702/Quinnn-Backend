@@ -35,6 +35,8 @@ app.use('/api/comment', require('./routes/comment'));
 // @ts-ignore
 app.use('/api/event', require('./routes/event'));
 // @ts-ignore
+app.use('/api/blog', require('./routes/blog'));
+// @ts-ignore
 app.use('/api/', require('./routes/common'));
 
 // @ts-ignore

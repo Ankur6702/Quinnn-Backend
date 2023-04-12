@@ -8,6 +8,7 @@ const axios = require('axios');
 const User = require('../models/User');
 const Post = require('../models/Post');
 const Event = require('../models/Event');
+const Blog = require('../models/Blog');
 
 // Local functions
 const logger = require('../logger');
@@ -61,6 +62,37 @@ router.get('/fetchPosts/:userId', async (req, res) => {
         }
         logger.info('Posts found');
         res.status(200).json({ status: 'success', message: 'Posts found', data: posts });
+    } catch (error) {
+        logger.error('Internal Server Error: ', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+// To fetch all blogs
+router.get('/blogs', async (req, res) => {
+    logger.info('Fetching all blogs');
+    try {
+        const { page = 1, limit = 10, sort = 'popular' } = req.query;
+        // @ts-ignore
+        const blogs = await Blog.find();
+        if (!blogs) {
+            logger.error('Blogs not found');
+            return res.status(404).json({ status: 'error', message: 'Blogs not found' });
+        }
+
+        if (sort === 'popular') {
+            blogs.sort((a, b) => b.upvotes.length - a.upvotes.length);
+        } else {
+            // @ts-ignore
+            blogs.sort((a, b) => new Date(b.creationDate) - new Date(a.creationDate));
+        }
+        // @ts-ignore
+        const startIndex = (page - 1) * limit;
+        // @ts-ignore
+        const endIndex = page * limit;
+        const results = blogs.slice(startIndex, endIndex);
+        logger.info('Blogs found');
+        res.status(200).json({ status: 'success', message: 'Blogs found', data: results });
     } catch (error) {
         logger.error('Internal Server Error: ', error.message);
         res.status(500).json({ status: 'error', message: error.message });
