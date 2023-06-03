@@ -2,7 +2,6 @@
 const express = require('express');
 const router = express.Router();
 const dotenv = require('dotenv');
-const { body, validationResult } = require('express-validator');
 const { fetchUser } = require('../middleware/fetchUser');
 
 // Models
@@ -15,25 +14,8 @@ dotenv.config();
 
 // To create a new event
 // @ts-ignore
-router.post('/create', fetchUser, [
-    body('title', 'Title must be atleast 3 characters').isLength({ min: 3 }),
-    body('description', 'Description must be atleast 5 characters').isLength({ min: 5 }),
-    body('location', 'Location must be atleast 3 characters').isLength({ min: 3 }).optional(),
-    body('meetingURL', 'meetingURL must be a valid URL').isURL().optional(),
-    body('isOnline', 'isOnline must be a boolean').isBoolean(),
-    body('imageURL', 'imageURL must be a valid URL').isURL().optional(),
-    body('startDate', 'startDate is required').exists(),
-    body('startTime', 'startTime is required').exists(),
-    body('endDate', 'endDate is required').exists(),
-    body('endTime', 'endTime is required').exists(),
-], async (req, res) => {
+router.post('/create', fetchUser, async (req, res) => {
     logger.info('Creating a new event');
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        logger.error('Invalid input');
-        return res.status(400).json({ status: 'error', message: errors.array() });
-    }
-
     try {
         // @ts-ignore
         const userId = req.userId;

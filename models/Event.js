@@ -5,16 +5,12 @@ const EventSchema = new Schema({
     title: {
         type: String,
         required: true,
-        trim: true,
-        minlength: 3,
-        maxlength: 100
+        trim: true
     },
     description: {
         type: String,
         required: true,
-        trim: true,
-        minlength: 5,
-        maxlength: 500
+        trim: true
     },
     creator: {
         type: Schema.Types.ObjectId,
@@ -28,9 +24,7 @@ const EventSchema = new Schema({
     location: {
         type: String,
         required: false,
-        trim: true,
-        minlength: 3,
-        maxlength: 200
+        trim: true
     },
     meetingURL: {
         type: String,
