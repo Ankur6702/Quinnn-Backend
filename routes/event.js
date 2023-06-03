@@ -195,17 +195,22 @@ router.put('/register/:id', fetchUser, async (req, res) => {
 router.get('/upcoming', async (req, res) => {
     logger.info('Fetching all upcoming events');
     try {
-        // fetch events where startDate is greater than current date and if the date is same then check for startTime
-        // startDate contains date in dd/mm/yyyy format and startTime contains time in hh:mm:ss format
+        const currentDate = new Date();
+        const formattedCurrentDate = currentDate.toISOString().split('T')[0];
+        const currentTime = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+
         const events = await Event.find({
             $or: [
-                { startDate: { $gt: new Date() } },
+                { startDate: { $gt: formattedCurrentDate } },
                 {
-                    startDate: { $eq: new Date() },
-                    startTime: { $gt: new Date().toLocaleTimeString() },
-                },
-            ],
+                    $and: [
+                        { startDate: formattedCurrentDate },
+                        { startTime: { $gt: currentTime } }
+                    ]
+                }
+            ]
         });
+
         logger.info('Upcoming events fetched successfully');
         res.json({ status: 'success', message: 'Upcoming events fetched successfully', events });
     } catch (error) {
@@ -218,19 +223,22 @@ router.get('/upcoming', async (req, res) => {
 router.get('/past', async (req, res) => {
     logger.info('Fetching all past events');
     try {
-        // fetch events where endDate is less than current date and if the date is same then check for endTime
-        // startDate contains date in dd/mm/yyyy format and startTime contains time in hh:mm:ss format
-        console.log(new Date().toLocaleDateString())
-        console.log(new Date().toLocaleTimeString())
+        const currentDate = new Date();
+        const formattedCurrentDate = currentDate.toISOString().split('T')[0];
+        const currentTime = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+
         const events = await Event.find({
             $or: [
-                { endDate: { $lt: new Date() } },
+                { endDate: { $lt: formattedCurrentDate } },
                 {
-                    endDate: { $eq: new Date() },
-                    endTime: { $lt: new Date().toLocaleTimeString() },
-                },
-            ],
+                    $and: [
+                        { endDate: formattedCurrentDate },
+                        { endTime: { $lt: currentTime } }
+                    ]
+                }
+            ]
         });
+
         logger.info('Past events fetched successfully');
         res.json({ status: 'success', message: 'Past events fetched successfully', events });
     } catch (error) {
@@ -243,16 +251,18 @@ router.get('/past', async (req, res) => {
 router.get('/ongoing', async (req, res) => {
     logger.info('Fetching all ongoing events');
     try {
-        // fetch events where current date is between startDate and endDate and also cthe current time is between startTime and endTime
-        // startDate contains date in dd/mm/yyyy format and startTime contains time in hh:mm:ss format
+        const currentDate = new Date();
+        const formattedCurrentDate = currentDate.toISOString().split('T')[0];
+        const currentTime = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+
         const events = await Event.find({
             $and: [
-                { startDate: { $lte: new Date() } },
-                { endDate: { $gte: new Date() } },
-                { startTime: { $lte: new Date().toLocaleTimeString() } },
-                { endTime: { $gte: new Date().toLocaleTimeString() } },
+                { startDate: formattedCurrentDate },
+                { startTime: { $lte: currentTime } },
+                { endTime: { $gte: currentTime } },
             ],
         });
+
         logger.info('Ongoing events fetched successfully');
         res.json({ status: 'success', message: 'Ongoing events fetched successfully', events });
     } catch (error) {
