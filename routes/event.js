@@ -238,11 +238,22 @@ router.get('/ongoing', async (req, res) => {
         const currentTime = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 
         const events = await Event.find({
-            $and: [
-                { startDate: formattedCurrentDate },
-                { startTime: { $lte: currentTime } },
-                { endTime: { $gte: currentTime } },
-            ],
+            $or: [
+                {
+                    $and: [
+                        { startDate: { $lte: formattedCurrentDate } },
+                        { endDate: { $gte: formattedCurrentDate } },
+                    ]
+                },
+                {
+                    $and: [
+                        { startDate: formattedCurrentDate },
+                        { startTime: { $lte: currentTime } },
+                        { endDate: { $gte: formattedCurrentDate } },
+                        { endTime: { $gte: currentTime } }
+                    ]
+                }
+            ]
         });
 
         logger.info('Ongoing events fetched successfully');
