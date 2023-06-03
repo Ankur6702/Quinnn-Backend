@@ -8,6 +8,5 @@ delete user profile
 private operations (Followers, posts etc) - new middleware
 private profile follow request
 
-comments like/dislike toggle
 automate meetig url
-Check past, upcoming, ongoing event apis
+better error logging

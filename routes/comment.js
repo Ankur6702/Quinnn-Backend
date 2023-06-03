@@ -51,7 +51,7 @@ router.post('/create/:postid', fetchUser, [
         await post.save();
 
         logger.info('Commented on the post successfully');
-        res.status(200).json({ status: 'success', message: 'Commented on the post successfully' });
+        res.status(200).json({ status: 'success', message: 'Commented on the post successfully', commentId: comment._id });
     } catch (error) {
         logger.error('Internal Server Error: ', error.message);
         res.status(500).json({ status: 'error', message: error.message });
