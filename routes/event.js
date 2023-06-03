@@ -156,7 +156,7 @@ router.put('/register/:id', fetchUser, async (req, res) => {
         }
 
         logger.info('Checking if the user is already registered in the event');
-        if (event.attendees.find(attendee => attendee.userId.toString() === userId.toString())) {
+        if (event.attendees.find(id => id.toString() === userId.toString())) {
             logger.error('Already registered the event');
             return res.status(400).json({ status: 'error', message: 'Already registered the event' });
         }
