@@ -19,8 +19,6 @@ const { validatePassword, validateUsername } = require('../utils/validators');
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// ===========================================Controllers=====================================================
-
 // To register a new user
 router.post('/signup',
     body('name').notEmpty().withMessage('Name is required'),

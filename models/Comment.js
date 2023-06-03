@@ -5,9 +5,7 @@ const CommentSchema = new Schema({
     text: {
         type: String,
         required: true,
-        trim: true,
-        minlength: 3,
-        maxlength: 100
+        trim: true
     },
     userID: {
         type: Schema.Types.ObjectId,

@@ -7,14 +7,11 @@ const { fetchUser } = require('../middleware/fetchUser');
 
 // Models
 const Blog = require('../models/Blog');
-const User = require('../models/User');
 
 // Local functions
 const logger = require('../logger');
 
 dotenv.config();
-
-// ===========================================Controllers=====================================================
 
 // To create a new blog
 router.post('/create', fetchUser, [

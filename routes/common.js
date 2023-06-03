@@ -15,8 +15,6 @@ const logger = require('../logger');
 
 dotenv.config();
 
-// ===========================================Controllers=====================================================
-
 // To get all the posts of all the users
 router.get('/posts', async (req, res) => {
     logger.info('Getting all the posts of all the users');

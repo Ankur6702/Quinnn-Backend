@@ -7,14 +7,11 @@ const { fetchUser } = require('../middleware/fetchUser');
 
 // Models
 const Event = require('../models/Event');
-const User = require('../models/User');
 
 // Local functions
 const logger = require('../logger');
 
 dotenv.config();
-
-// ===========================================Controllers=====================================================
 
 // To create a new event
 // @ts-ignore

@@ -11,11 +11,8 @@ const Comment = require('../models/Comment');
 
 // Local functions
 const logger = require('../logger');
-const { validateUsername, validateURL } = require('../utils/validators');
 
 dotenv.config();
-
-// ===========================================Controllers=====================================================
 
 // Comment on a post
 // @ts-ignore

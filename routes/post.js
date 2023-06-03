@@ -11,11 +11,8 @@ const Post = require('../models/Post');
 
 // Local functions
 const logger = require('../logger');
-const { validateUsername, validateURL } = require('../utils/validators');
 
 dotenv.config();
-
-// ===========================================Controllers=====================================================
 
 // Create a post
 // @ts-ignore

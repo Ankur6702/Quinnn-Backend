@@ -9,11 +9,9 @@ const User = require('../models/User');
 
 // Local functions
 const logger = require('../logger');
-const { validateUsername, validateURL } = require('../utils/validators');
+const { validateUsername } = require('../utils/validators');
 
 dotenv.config();
-
-// ===========================================Controllers=====================================================
 
 // Router to fetch user profile
 // @ts-ignore
