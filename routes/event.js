@@ -191,7 +191,7 @@ router.get('/upcoming', async (req, res) => {
                     ]
                 }
             ]
-        });
+        }).sort({ startDate: 1 }); // Sort events based on startDate in ascending order
 
         logger.info('Upcoming events fetched successfully');
         res.json({ status: 'success', message: 'Upcoming events fetched successfully', events });
